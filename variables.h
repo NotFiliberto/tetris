@@ -1,0 +1,2 @@
+#define DEFAULT_ROWS 10
+#define DEFAULT_COLS 7
