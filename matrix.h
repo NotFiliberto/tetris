@@ -8,7 +8,7 @@ typedef struct Matrix
     int *map;
 } Matrix;
 
-Matrix *createMatrix(int rows, int cols)
+Matrix *createMatrix(int cols, int rows)
 {
     Matrix *matrix = (Matrix *)malloc(sizeof(Matrix));
     matrix->cols = cols;

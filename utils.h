@@ -14,3 +14,8 @@ int charToInt(char c)
 char intToChar(int i){
     return i+'0';
 }
+
+//module func for negative and positive numbers
+int Mod(int x, int m){
+    return (x%m +m)%m;
+}

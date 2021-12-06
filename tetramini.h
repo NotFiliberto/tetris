@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "matrix.h"
 
 #define TETRAMINO_I 0
 #define TETRAMINO_J 1
@@ -13,64 +12,118 @@
 typedef struct tetramino
 {
     int code;
-    int *map;
+    Matrix matrix;
 } Tetramino;
 
-Tetramino Tetramini[] = {
-    {
-        TETRAMINO_I,
-        {
-            1, 0, 0, 0,
-            1, 0, 0, 0,
-            1, 0, 0, 0,
-            1, 0, 0, 0
-        }
-    },
-    {
-        TETRAMINO_J,
-        {
-            1, 0, 0,
-            1, 1, 1,
-            0, 0, 0
-        }
-    },
-    {
-        TETRAMINO_L,
-        {
-            0, 0, 1,
-            1, 1, 1,
-            0, 0, 0
-        }
-    },
-    {
-        TETRAMINO_O,
-        {
-            1, 1, 0,
-            1, 1, 0,
-            0, 0, 0
-        }
-    },
-    {
-        TETRAMINO_S,
-        {
-            0, 1, 1,
-            1, 1, 0,
-            0, 0, 0
-        }
-    },
-    {
-        TETRAMINO_Z,
-        {
-            1, 1, 0,
-            0, 1, 1,
-            0, 0, 0
-        }
-    },
-    {   TETRAMINO_T,
-        {
-            0, 1, 0,
-            1, 1, 1,
-            0, 0, 0
+int I[] = {
+    0, 0, 0, 0,
+    1, 1, 1, 1,
+    0, 0, 0, 0,
+    0, 0, 0, 0
+};
+
+int J[] = {
+    1, 0, 0,
+    1, 1, 1,
+    0, 0, 0
+};
+
+int L[] = {
+    0, 0, 1,
+    1, 1, 1,
+    0, 0, 0
+};
+
+int O[] = {
+    1, 1, 0,
+    1, 1, 0,
+    0, 0, 0
+};
+
+int S[] = {
+    0, 1, 1,
+    1, 1, 0,
+    0, 0, 0
+};
+
+int Z[] = {
+    1, 1, 0,
+    0, 1, 1,
+    0, 0, 0
+};
+
+int T[] = {
+    0, 1, 0,
+    1, 1, 1,
+    0, 0, 0
+};
+
+Tetramino 
+    tetramini[] = {
+        {TETRAMINO_I, {4, 4, I}},
+        {TETRAMINO_J, {3, 3, J}},
+        {TETRAMINO_L, {3, 3, L}},
+        {TETRAMINO_O, {3, 3, O}},
+        {TETRAMINO_S, {3, 3, S}},
+        {TETRAMINO_Z, {3, 3, Z}},
+        {TETRAMINO_T, {3, 3, T}},
+};
+
+void tetraminoSize(Tetramino* t, int* w, int* h){
+    
+    int longest=0,length=1;
+    for (int i = 1; i < (t->matrix.rows * t->matrix.cols); i++){
+        if (t->matrix.map[i] == t->matrix.map[i - 1] && t->matrix.map[i] == 1)
+            length++;
+        else{
+            if(length>longest)
+                longest=length;
+            length=1;//reset
         }
     }
-};
+    if (length > longest)
+        longest = length;
+    *w = longest;
+
+
+    longest = 0; length = 1;
+    for (int i = 0; i < t->matrix.cols; i++)
+    {
+        int count=0;
+        for(int j=0; j<t->matrix.rows; j++){
+            if (t->matrix.map[i + j * t->matrix.rows] == 1)
+                count++;
+        }
+
+        if(count>longest)
+            longest=count;
+    }
+    *h=longest;
+}
+
+/* \brief offset where tetramino start his first block, we have to check vertically every col
+ */
+int offsetX(Tetramino* t){
+    for(int i=0; i<t->matrix.cols;i++){
+        for (int j = 0; j < t->matrix.rows; j++){
+            if(t->matrix.map[i + j*t->matrix.cols] == 1)
+                return i;
+        }
+    }
+
+    return -1; //if empty matrix
+}
+
+int offsetY(Tetramino *t)
+{
+    for (int i = 0; i < t->matrix.rows; i++)
+    {
+        for (int j = 0; j < t->matrix.cols; j++)
+        {
+            if(t->matrix.map[j + i*t->matrix.rows] == 1)
+                return i;
+        }
+    }
+
+    return -1; // if empty matrix
+}

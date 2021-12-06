@@ -1,2 +1,2 @@
-#define DEFAULT_ROWS 10
-#define DEFAULT_COLS 7
+#define DEFAULT_HEIGHT 10
+#define DEFAULT_WIDTH 7
