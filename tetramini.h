@@ -13,14 +13,20 @@ typedef struct tetramino
 {
     int code;
     Matrix matrix;
+    int width;
+    int heigth;
 } Tetramino;
 
 int I[] = {
+        1, 0, 0, 0,
+        1, 0, 0, 0,
+        1, 0, 0, 0,
+        1, 0, 0, 0
+/*     0, 0, 0, 0,
     0, 0, 0, 0,
-    1, 1, 1, 1,
     0, 0, 0, 0,
-    0, 0, 0, 0
-};
+    1, 1, 1, 1 */
+    };
 
 int J[] = {
     1, 0, 0,
@@ -60,16 +66,17 @@ int T[] = {
 
 Tetramino 
     tetramini[] = {
-        {TETRAMINO_I, {4, 4, I}},
-        {TETRAMINO_J, {3, 3, J}},
-        {TETRAMINO_L, {3, 3, L}},
-        {TETRAMINO_O, {3, 3, O}},
-        {TETRAMINO_S, {3, 3, S}},
-        {TETRAMINO_Z, {3, 3, Z}},
-        {TETRAMINO_T, {3, 3, T}},
+        {TETRAMINO_I, {4, 4, I}, 1, 4},
+        {TETRAMINO_J, {3, 3, J}, 3, 2},
+        {TETRAMINO_L, {3, 3, L}, 3, 2},
+        {TETRAMINO_O, {3, 3, O}, 2, 2},
+        {TETRAMINO_S, {3, 3, S}, 3, 2},
+        {TETRAMINO_Z, {3, 3, Z}, 3, 2},
+        {TETRAMINO_T, {3, 3, T}, 3, 2},
 };
 
-void tetraminoSize(Tetramino* t, int* w, int* h){
+//non funziona bene DA SISTEMARE
+/* void tetraminoSize(Tetramino* t, int* w, int* h){
     
     int longest=0,length=1;
     for (int i = 1; i < (t->matrix.rows * t->matrix.cols); i++){
@@ -99,7 +106,7 @@ void tetraminoSize(Tetramino* t, int* w, int* h){
             longest=count;
     }
     *h=longest;
-}
+} */
 
 /* \brief offset where tetramino start his first block, we have to check vertically every col
  */
