@@ -14,7 +14,8 @@ int main(void)
     tetramini[0].matrix.map[5] = 9;
     printMatrix(&tetramini[0].matrix); */
 
-    insertTetramino(tetris->matrix, &tetramini[TETRAMINO_T], 4);
+    insertTetramino(tetris->matrix, &tetramini[TETRAMINO_I], 3);
+    insertTetramino(tetris->matrix, &tetramini[TETRAMINO_Z], 3);
 
     printMatrix(tetris->matrix);
 
