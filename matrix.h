@@ -27,8 +27,7 @@ void deleteMatrix(Matrix *matrix)
 {
     // for (int row = 0; row < matrix->rows; row++)
     //     free(matrix->map[row]);
-
-    free(matrix->map);
+    //free(matrix->map); //for some reason i have to commend this line becuase (error?)
     free(matrix);
 }
 
@@ -38,9 +37,9 @@ void printMatrix(Matrix *matrix)
     {
         for (int col = 0; col < matrix->cols; col++)
         {
-            printf("%d", matrix->map[col + row*matrix->cols]);
+            printw("%d", matrix->map[col + row*matrix->cols]);
         }
-        printf("\n");
+        printw("\n");
     }
 }
 

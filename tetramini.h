@@ -18,10 +18,10 @@ typedef struct tetramino
 } Tetramino;
 
 int I[] = {
-        1, 0, 0, 0,
-        1, 0, 0, 0,
-        1, 0, 0, 0,
-        1, 0, 0, 0
+        1, 1, 1, 1,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0
 /*     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
@@ -66,7 +66,7 @@ int T[] = {
 
 Tetramino 
     tetramini[] = {
-        {TETRAMINO_I, {4, 4, I}, 1, 4},
+        {TETRAMINO_I, {4, 4, I}, 4, 1},
         {TETRAMINO_J, {3, 3, J}, 3, 2},
         {TETRAMINO_L, {3, 3, L}, 3, 2},
         {TETRAMINO_O, {3, 3, O}, 2, 2},
