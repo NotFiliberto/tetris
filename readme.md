@@ -8,24 +8,29 @@ Simple tetris implementation in C.
 
 ## Installation
 1. Download the repository
+
     ```
     git clone https://github.com/Filibertoo/tetris
     ```
 2. Install every [dependencies](#dependencies)
 3. Go into the repository folder
+
     ```
     cd ./build
     ```
 4. Create CMake files, run:
+
     ```
     cmake -S . -B ./build
     ```
 5. Build (inside build folder)
+
     * Linux/Mac
 
         ```
         make
         ```
+
     * Windows
 
         ```
