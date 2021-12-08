@@ -1,13 +1,9 @@
-#include <stdio.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <curses.h> // to implement cross platform non blocking terminal keyboard input
 #include "include/headers.h"
 
 int main(void)
 {
     char key;
-    int tetraminoSwitchType = 0;
+    int tetraminoSwitchType = 0, x=0;
     WINDOW *win;
 
     // initialization
@@ -15,39 +11,54 @@ int main(void)
     nodelay(win, TRUE);
     noecho();
 
-    printw("Press ESC to exit.\n"); // instead of printf
+    //printw("Press ESC to exit.\n"); // instead of printf
 
     Tetris *tetris = createTetris(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-    printMatrix(&tetramini[tetraminoSwitchType % 6].matrix); //print first tetramino
+    printMatrix(&tetramini[tetraminoSwitchType % 6].matrix); // print first tetramino
+    printw("\n\n");
+    printMatrix(tetris->matrix);
 
     while(1 && key != ESC){
-        key = getch();
+        key = toupper(getch());
         if(key > -1){ //default is -1 if u dont press anything
             if(key == ESC && getch() == '[') key=getch(); //prevent exit if user press ARROW KEYS becuase when it happen getch will push 3 values into the buffer (ESC + [ + ARROW_KEY)
             //printw("%c", toupper(key));
 
-
-            switch (toupper(key))
+            switch (key)
             {
             case '\n':
                 clear(); //clear screen
                 tetraminoSwitchType++;
-                printMatrix(&tetramini[tetraminoSwitchType%6].matrix);
+                x=0;
+                printMatrixW(&tetramini[tetraminoSwitchType%6].matrix,x);
                 printw("\n\n");
                 printMatrix(tetris->matrix);
                 break;
             case ' ':
                 clear();
-                if (insertTetramino(tetris->matrix, &tetramini[tetraminoSwitchType % 6], 3, 0, 0)){ // no gravity
-                    printw("\ninsert\n\n");
-                } else
-                    printw("\nnot inserted\n\n");
+                insertTetramino(tetris->matrix, &tetramini[tetraminoSwitchType % 6], x, 0, GRAVITY);
 
-                printMatrix(&tetramini[tetraminoSwitchType % 6].matrix);
+                printMatrixW(&tetramini[tetraminoSwitchType % 6].matrix, x);
                 printw("\n\n");
                 printMatrix(tetris->matrix);
                 break;
-            
+
+            case 'A': //LEFT
+                clear();
+                x = manageTetraminoXInput(&tetramini[tetraminoSwitchType % 6] , x, key);
+                printMatrixW(&tetramini[tetraminoSwitchType % 6].matrix, x);
+                printw("\n\n");
+                printMatrixW(tetris->matrix, 0);
+                break;
+
+            case 'D': //RIGHT
+                clear();
+                x = manageTetraminoXInput(&tetramini[tetraminoSwitchType % 6],x, key);
+                printMatrixW(&tetramini[tetraminoSwitchType % 6].matrix, x);
+                printw("\n\n");
+                printMatrixW(tetris->matrix, 0);
+                break;
+
             default:
                 break;
             }
@@ -64,8 +75,6 @@ int main(void)
     insertTetramino(tetris->matrix, &tetramini[TETRAMINO_I], 6);
 
     printMatrix(tetris->matrix); */
-
- 
 
     deleteTetris(tetris);
 
