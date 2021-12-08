@@ -1,0 +1,5 @@
+#include "mylibs/variables.h"
+#include "mylibs/utils.h"
+#include "mylibs/matrix.h"
+#include "mylibs/tetramini.h"
+#include "mylibs/tetris.h"

@@ -2,11 +2,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <curses.h> // to implement cross platform non blocking terminal keyboard input
-#include "variables.h"
-#include "utils.h"
-#include "matrix.h"
-#include "tetramini.h"
-#include "tetris.h"
+#include "include/headers.h"
 
 int main(void)
 {
