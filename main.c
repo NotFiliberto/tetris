@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include <ncurses.h> // to implement cross platform non blocking terminal keyboard input
+#include <curses.h> // to implement cross platform non blocking terminal keyboard input
 #include "variables.h"
 #include "utils.h"
 #include "matrix.h"
