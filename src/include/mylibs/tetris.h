@@ -68,6 +68,19 @@ int isIntersected(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
     return 0;
 }
 
+int checkYRowPiece(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
+{
+
+    int counter = 0;
+    for (int j = 0; j < t->width; j++)
+    {
+        if (tetrisMatrix->map[tetrisMatrix->cols*y + x + j] == 1)
+            counter++;
+    }
+
+    return counter;
+}
+
 int findY(Matrix *tetrisMatrix, Tetramino *t, int x)
 {
     int y, count = 0;
@@ -79,16 +92,17 @@ int findY(Matrix *tetrisMatrix, Tetramino *t, int x)
         {
             return y - 1;
         }
-        else
-            count++;
+        if (checkYRowPiece(tetrisMatrix, t, x, y) > 0) //if the row in the matrix is not empty u cant insert the new Tetramino
+            return y - 1;
+        count++;
     }
     return count - 1;
 }
 
 int insertTetramino(Matrix *tetrisMatrix, Tetramino *t, int x, int y, int gravity)
 {
-    if (x > DEFAULT_WIDTH)
-        return 0; // impossible to insert over the width
+    if (x > DEFAULT_WIDTH || x < 0 || y < 0)
+        return 0; // impossible to insert
 
     int offX = offsetX(t), offY = offsetY(t);
 
