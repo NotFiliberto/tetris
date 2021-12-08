@@ -88,13 +88,11 @@ int findY(Matrix *tetrisMatrix, Tetramino *t, int x)
     for (y = 0; y < tetrisMatrix->rows - t->heigth + 1; y++)
     {
         //printw("[%d]\n", y);
-        if (isIntersected(tetrisMatrix, t, x, y))
-        {
-            return y - 1;
-        }
         if (checkYRowPiece(tetrisMatrix, t, x, y) > 0) //if the row in the matrix is not empty u cant insert the new Tetramino
             return y - 1;
-        count++;
+        if (isIntersected(tetrisMatrix, t, x, y))
+            return y - 1;
+        count++; //else increase counter
     }
     return count - 1;
 }
