@@ -15,13 +15,15 @@ typedef struct tetramino
     Matrix matrix;
     int width;
     int heigth;
+    int offsetX;
+    int offsetY;
 } Tetramino;
 
 int I[] = {
-        1, 0, 0, 0,
-        1, 0, 0, 0,
-        1, 0, 0, 0,
-        1, 0, 0, 0
+        0, 1, 0, 0,
+        0, 1, 0, 0,
+        0, 1, 0, 0,
+        0, 1, 0, 0
     };
 
 int J[] = {
@@ -62,13 +64,13 @@ int T[] = {
 
 Tetramino 
     tetramini[] = {
-        {TETRAMINO_I, {4, 4, I}, 1, 4},
-        {TETRAMINO_J, {3, 3, J}, 3, 2},
-        {TETRAMINO_L, {3, 3, L}, 3, 2},
-        {TETRAMINO_O, {3, 3, O}, 2, 2},
-        {TETRAMINO_S, {3, 3, S}, 3, 2},
-        {TETRAMINO_Z, {3, 3, Z}, 3, 2},
-        {TETRAMINO_T, {3, 3, T}, 3, 2},
+        {TETRAMINO_I, {4, 4, I}, 1, 4, 0, 0},
+        {TETRAMINO_J, {3, 3, J}, 3, 2, 0, 0},
+        {TETRAMINO_L, {3, 3, L}, 3, 2, 0, 0},
+        {TETRAMINO_O, {3, 3, O}, 2, 2, 0, 0},
+        {TETRAMINO_S, {3, 3, S}, 3, 2, 0, 0},
+        {TETRAMINO_Z, {3, 3, Z}, 3, 2, 0, 0},
+        {TETRAMINO_T, {3, 3, T}, 3, 2, 0, 0},
 };
 
 /* \brief offset where tetramino start his first block, we have to check vertically every col
