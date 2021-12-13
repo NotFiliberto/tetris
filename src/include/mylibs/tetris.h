@@ -10,7 +10,6 @@ typedef struct tetris
     // score
     // gamemode
     // ecc...
-    Tetramino t;
 } Tetris;
 
 int testingMap[] = { // 10x7
@@ -168,4 +167,38 @@ int insertTetramino(Matrix *tetrisMatrix, Tetramino *t, int x, int y, int gravit
         return 1; // inserted
     }
     return 0; // not inserted
+}
+
+Matrix *rotateMatrix90Clockwise(Matrix *matrix)
+{
+    Matrix *trasposedMatrix = createMatrix(matrix->rows, matrix->cols); // invert cols with rows for future improvement
+
+    // logic for calculate trasposed matrix
+    for (int row = 0; row < matrix->rows; row++)
+        for (int col = 0; col < matrix->cols; col++)
+            trasposedMatrix->map[row * trasposedMatrix->cols + col] = matrix->map[col * matrix->rows + row];
+
+    Matrix *rotatedMatrix90Clockwise = createMatrix(trasposedMatrix->rows, trasposedMatrix->cols); // invert for the same reason of before
+    // reverse the order of cols
+    for (int row = 0; row < matrix->rows; row++)
+        for (int col = trasposedMatrix->cols - 1, j = 0; col > -1; col--, j++)
+            rotatedMatrix90Clockwise->map[row * rotatedMatrix90Clockwise->cols + j] = trasposedMatrix->map[row * rotatedMatrix90Clockwise->cols + col];
+
+    return rotatedMatrix90Clockwise;
+}
+
+Tetramino* rotateTetramino(Tetramino* t){
+    int tetraminoCode = t->code;
+    Matrix *rotated = rotateMatrix90Clockwise(&t->matrix);
+
+    //deleteTetramino(t);
+    Tetramino *tr = (Tetramino *)malloc(sizeof(Tetramino));
+
+    tr->matrix = *rotated;
+    tr->offsetX = offsetX(tr);
+    tr->offsetY = offsetY(tr);
+    tr->width = t->heigth;
+    tr->heigth = t->width;
+
+    return tr;
 }

@@ -3,6 +3,7 @@
 void switchTetraminoTask(Tetris *tetris);
 void insertTetraminoTask(Tetris *tetris);
 void moveTetraminoTask(Tetris *tetris, char key);
+void rotateTetraminoTask(Tetris *tetris);
 
 void testing(Tetris *tetris);
 
@@ -48,6 +49,9 @@ int main(void)
             case 'D': // right
                 moveTetraminoTask(tetris, key);
                 break;
+            case 'W':
+                rotateTetraminoTask(tetris);
+                break;
             case '-': // for testing stuffs
                 testing(tetris);
                 break;
@@ -64,20 +68,20 @@ int main(void)
     return 0;
 }
 
-void init(){
-
+void init()
+{
 }
 
 void switchTetraminoTask(Tetris *tetris)
 {
     clear(); // clear screen
 
-    tetris->tetraminoType = tetris->tetramino->code + 1; //next tetramino
+    tetris->tetraminoType = tetris->tetramino->code + 1; // next tetramino
 
-    deleteTetramino(tetris->tetramino); //delete old tetramino and all his stuffs
-    tetris->tetramino = createTetramino(&tetramini[tetris->tetraminoType % 7]); //create new tetramino
+    deleteTetramino(tetris->tetramino);                                         // delete old tetramino and all his stuffs
+    tetris->tetramino = createTetramino(&tetramini[tetris->tetraminoType % 7]); // create new tetramino
 
-    tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); //check x pos for the visualization
+    tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); // check x pos for the visualization
 
     printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
     printw("\n\n");
@@ -102,18 +106,36 @@ void moveTetraminoTask(Tetris *tetris, char key)
     printMatrix(tetris->matrix);
 }
 
-void testing(Tetris *tetris){
+void rotateTetraminoTask(Tetris *tetris)
+{
+    clear();
+
+    tetris->tetramino = rotateTetramino(tetris->tetramino);
+    tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); // fix the position
+
+    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
+    printw("\n\n");
+    printMatrix(tetris->matrix);
+}
+
+void testing(Tetris *tetris)
+{
     clear(); // clear screen
 
-    tetris->tetraminoType++; // next tetramino
-
-    tetris->t = tetramini[tetris->tetraminoType % 7]; // create new tetramino
-
-    tetris->lastX = tetraminoXMoving(&tetris->t, tetris->lastX, '\n'); // check x pos for the visualization
-
-    tetris->t.matrix.map[8] = 9;
-
-    printMatrixW(&tetris->t.matrix, tetris->lastX, tetris->t.offsetX, tetris->t.offsetY);
+    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, 0, 0);
     printw("\n\n");
-    printMatrixW(&tetramini[tetris->tetraminoType % 7].matrix, tetris->lastX, tetris->t.offsetX, tetris->t.offsetY);
+
+    Matrix *rotated = rotateMatrix90Clockwise(&tetris->tetramino->matrix);
+
+    printMatrixW(rotated, tetris->lastX, 0, 0);
+
+    /* FAI UN FUNZIONA ROTATE TETRAMINO DOVE FAI TUTTO NON QUESTA MERDA */
+
+    tetris->tetramino = rotateTetramino(tetris->tetramino);
+    tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); // fix the position
+
+    printw("\n\n");
+
+    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, 0, 0);
+    printw("\n\noffsetX: %d --- offsety: %d\nwidth: %d --- heigth: %d", tetris->tetramino->offsetX, tetris->tetramino->offsetY, tetris->tetramino->width, tetris->tetramino->heigth);
 }

@@ -14,11 +14,11 @@ Matrix *createMatrix(int cols, int rows)
     matrix->cols = cols;
     matrix->rows = rows;
 
-    //matrix->map = (int **)malloc(sizeof(int) * rows);
-    // for (int row = 0; row < rows; row++)
-    //     matrix->map[row] = (int *)malloc(sizeof(int) * cols);
+    // matrix->map = (int **)malloc(sizeof(int) * rows);
+    //  for (int row = 0; row < rows; row++)
+    //      matrix->map[row] = (int *)malloc(sizeof(int) * cols);
 
-    matrix->map = (int*) malloc(sizeof(int) * rows * cols);
+    matrix->map = (int *)malloc(sizeof(int) * rows * cols);
 
     return matrix;
 }
@@ -27,7 +27,7 @@ void deleteMatrix(Matrix *matrix)
 {
     // for (int row = 0; row < matrix->rows; row++)
     //     free(matrix->map[row]);
-    //free(matrix->map); //for some reason i have to commend this line becuase (error?)
+    // free(matrix->map); //for some reason i have to commend this line becuase (error?)
     free(matrix);
 }
 
@@ -37,7 +37,7 @@ void printMatrix(Matrix *matrix)
     {
         for (int col = 0; col < matrix->cols; col++)
         {
-            printw("%d", matrix->map[col + row*matrix->cols]);
+            printw("%d", matrix->map[col + row * matrix->cols]);
         }
         printw("\n");
     }
@@ -49,7 +49,7 @@ void clearMatrix(Matrix *matrix)
     {
         for (int col = 0; col < matrix->cols; col++)
         {
-            matrix->map[col + row*matrix->cols] = 0;
+            matrix->map[col + row * matrix->cols] = 0;
         }
     }
 }
