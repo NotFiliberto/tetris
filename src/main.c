@@ -122,20 +122,5 @@ void testing(Tetris *tetris)
 {
     clear(); // clear screen
 
-    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, 0, 0);
-    printw("\n\n");
-
-    Matrix *rotated = rotateMatrix90Clockwise(&tetris->tetramino->matrix);
-
-    printMatrixW(rotated, tetris->lastX, 0, 0);
-
-    /* FAI UN FUNZIONA ROTATE TETRAMINO DOVE FAI TUTTO NON QUESTA MERDA */
-
-    tetris->tetramino = rotateTetramino(tetris->tetramino);
-    tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); // fix the position
-
-    printw("\n\n");
-
-    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, 0, 0);
-    printw("\n\noffsetX: %d --- offsety: %d\nwidth: %d --- heigth: %d", tetris->tetramino->offsetX, tetris->tetramino->offsetY, tetris->tetramino->width, tetris->tetramino->heigth);
+   
 }

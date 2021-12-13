@@ -57,13 +57,13 @@ createTetris(int cols, int rows)
 
     tetris->tetramino = createTetramino(&tetramini[TETRAMINO_I]); // copy tetramino I from the array
 
-    // tetris->matrix = createMatrix(rows, cols); // the fuction returns the pointer of the created matrix
-    // clearMatrix(tetris->matrix);               // set up the effective map to all 0
+    tetris->matrix = createMatrix(cols, rows); // the fuction returns the pointer of the created matrix
+    clearMatrix(tetris->matrix);               // set up the effective map to all 0
 
     // FOR TESTING THINGS
-    tetris->matrix = createMatrix(7, 10);
-    free(tetris->matrix->map);
-    tetris->matrix->map = testingMap;
+    //tetris->matrix = createMatrix(7, 10);
+    //free(tetris->matrix->map);
+    //tetris->matrix->map = testingMap;
     // FOR TESTING THINGS
 
     return tetris;
