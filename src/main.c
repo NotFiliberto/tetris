@@ -1,9 +1,14 @@
 #include "include/headers.h"
 
+void switchTetraminoTask(Tetris *tetris);
+void insertTetraminoTask(Tetris *tetris);
+void moveTetraminoTask(Tetris *tetris, char key);
+
+void testing(Tetris *tetris);
+
 int main(void)
 {
     char key;
-    int tetraminoSwitchType = 0, x=0;
     WINDOW *win;
 
     // initialization
@@ -11,52 +16,40 @@ int main(void)
     nodelay(win, TRUE);
     noecho();
 
-    //printw("Press ESC to exit.\n"); // instead of printf
+    // printw("Press ESC to exit.\n"); // instead of printf
 
     Tetris *tetris = createTetris(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-    printMatrix(&tetramini[tetraminoSwitchType % 6].matrix); // print first tetramino
+    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
     printw("\n\n");
     printMatrix(tetris->matrix);
 
-    while(1 && key != ESC){
+    while (1 && key != ESC)
+    {
         key = toupper(getch());
-        if(key > -1){ //default is -1 if u dont press anything
-            if(key == ESC && getch() == '[') key=getch(); //prevent exit if user press ARROW KEYS becuase when it happen getch will push 3 values into the buffer (ESC + [ + ARROW_KEY)
-            //printw("%c", toupper(key));
+        if (key > -1)
+        { // default is -1 if u dont press anything
+            if (key == ESC && getch() == '[')
+                key = getch(); // prevent exit if user press ARROW KEYS becuase when it happen getch will push 3 values into the buffer (ESC + [ + ARROW_KEY)
+            // printw("%c", toupper(key));
 
             switch (key)
             {
             case '\n':
-                clear(); //clear screen
-                tetraminoSwitchType++;
-                x=0;
-                printMatrixW(&tetramini[tetraminoSwitchType%6].matrix,x);
-                printw("\n\n");
-                printMatrix(tetris->matrix);
+                switchTetraminoTask(tetris);
                 break;
             case ' ':
-                clear();
-                insertTetramino(tetris->matrix, &tetramini[tetraminoSwitchType % 6], x, 0, GRAVITY);
-
-                printMatrixW(&tetramini[tetraminoSwitchType % 6].matrix, x);
-                printw("\n\n");
-                printMatrix(tetris->matrix);
+                insertTetraminoTask(tetris);
                 break;
 
-            case 'A': //LEFT
-                clear();
-                x = manageTetraminoXInput(&tetramini[tetraminoSwitchType % 6] , x, key);
-                printMatrixW(&tetramini[tetraminoSwitchType % 6].matrix, x);
-                printw("\n\n");
-                printMatrixW(tetris->matrix, 0);
+            case 'A': // left
+                moveTetraminoTask(tetris, key);
                 break;
 
-            case 'D': //RIGHT
-                clear();
-                x = manageTetraminoXInput(&tetramini[tetraminoSwitchType % 6],x, key);
-                printMatrixW(&tetramini[tetraminoSwitchType % 6].matrix, x);
-                printw("\n\n");
-                printMatrixW(tetris->matrix, 0);
+            case 'D': // right
+                moveTetraminoTask(tetris, key);
+                break;
+            case '-': // for testing stuffs
+                testing(tetris);
                 break;
 
             default:
@@ -65,19 +58,62 @@ int main(void)
         }
     }
 
-/*     tetris->matrix = &tetramini[0].matrix;
-    tetramini[0].matrix.map[5] = 9;
-    printMatrix(&tetramini[0].matrix); */
-
-/*     insertTetramino(tetris->matrix, &tetramini[TETRAMINO_I], 3);
-    insertTetramino(tetris->matrix, &tetramini[TETRAMINO_Z], 3);
-
-    insertTetramino(tetris->matrix, &tetramini[TETRAMINO_I], 6);
-
-    printMatrix(tetris->matrix); */
-
     deleteTetris(tetris);
 
     endwin();
     return 0;
+}
+
+void init(){
+
+}
+
+void switchTetraminoTask(Tetris *tetris)
+{
+    clear(); // clear screen
+
+    tetris->tetraminoType = tetris->tetramino->code + 1; //next tetramino
+
+    deleteTetramino(tetris->tetramino); //delete old tetramino and all his stuffs
+    tetris->tetramino = createTetramino(&tetramini[tetris->tetraminoType % 7]); //create new tetramino
+
+    tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); //check x pos for the visualization
+
+    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
+    printw("\n\n");
+    printMatrix(tetris->matrix);
+}
+
+void insertTetraminoTask(Tetris *tetris)
+{
+    clear();
+    insertTetramino(tetris->matrix, tetris->tetramino, tetris->lastX, 0, GRAVITY);
+    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
+    printw("\n\n");
+    printMatrix(tetris->matrix);
+}
+
+void moveTetraminoTask(Tetris *tetris, char key)
+{
+    clear();
+    tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, key);
+    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
+    printw("\n\n");
+    printMatrix(tetris->matrix);
+}
+
+void testing(Tetris *tetris){
+    clear(); // clear screen
+
+    tetris->tetraminoType++; // next tetramino
+
+    tetris->t = tetramini[tetris->tetraminoType % 7]; // create new tetramino
+
+    tetris->lastX = tetraminoXMoving(&tetris->t, tetris->lastX, '\n'); // check x pos for the visualization
+
+    tetris->t.matrix.map[8] = 9;
+
+    printMatrixW(&tetris->t.matrix, tetris->lastX, tetris->t.offsetX, tetris->t.offsetY);
+    printw("\n\n");
+    printMatrixW(&tetramini[tetris->tetraminoType % 7].matrix, tetris->lastX, tetris->t.offsetX, tetris->t.offsetY);
 }
