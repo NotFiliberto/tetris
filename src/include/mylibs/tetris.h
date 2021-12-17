@@ -188,12 +188,12 @@ Matrix *rotateMatrix90Clockwise(Matrix *matrix)
 }
 
 Tetramino* rotateTetramino(Tetramino* t){
-    int tetraminoCode = t->code;
     Matrix *rotated = rotateMatrix90Clockwise(&t->matrix);
 
     //deleteTetramino(t);
     Tetramino *tr = (Tetramino *)malloc(sizeof(Tetramino));
 
+    tr->code = t->code;
     tr->matrix = *rotated;
     tr->offsetX = offsetX(tr);
     tr->offsetY = offsetY(tr);
