@@ -232,7 +232,7 @@ int decrementTetraminoAvailability(Tetris *tetris, int tetraminoCode)
 
 void printTetraminiAvailability(Tetris *tetris)
 {
-    printw("[Type] => availability\n\n");
+    printw("[Current Type %d] => %d\n\n", tetris->tetramino->code, tetris->availableTetramini[tetris->tetramino->code]);
     for (int i = 0; i < 7; i++)
     {
         printw("[%d] => %d ", i, tetris->availableTetramini[i]);
