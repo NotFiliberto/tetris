@@ -24,7 +24,10 @@ void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY)
             printw(" "); // space for better visualization
         for (int col = offsetX; col < matrix->cols; col++)
         {
-            printw("%d", matrix->map[col + row * matrix->cols]);
+            if (matrix->map[col + row * matrix->cols] == 1)
+                printw("%c", '@');
+            else
+                printw("%c", '.');
         }
         printw("\n");
     }

@@ -37,7 +37,10 @@ void printMatrix(Matrix *matrix)
     {
         for (int col = 0; col < matrix->cols; col++)
         {
-            printw("%d", matrix->map[col + row * matrix->cols]);
+            if (matrix->map[col + row * matrix->cols] == 1)
+                printw("%c", '@');
+            else
+                printw("%c", '.');
         }
         printw("\n");
     }
