@@ -101,6 +101,7 @@ int isIntersected(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
     return 0;
 }
 
+//check if the y of the matrix in a specif x is empty or not for the width of the piece
 int checkYRowPiece(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
 {
 
@@ -130,7 +131,7 @@ int findY(Matrix *tetrisMatrix, Tetramino *t, int x)
     return count - 1;
 }
 
-int insertTetramino(Matrix *tetrisMatrix, Tetramino *t, int x, int y, int gravity)
+int insertTetramino(Matrix *tetrisMatrix, Tetramino *t, int x, int y, int gravity, int insertFLAG)
 {
     if (x > DEFAULT_WIDTH || x < 0 || y < 0)
         return 0; // impossible to insert
@@ -160,7 +161,8 @@ int insertTetramino(Matrix *tetrisMatrix, Tetramino *t, int x, int y, int gravit
             {
                 if (t->matrix.map[(col) + row * t->matrix.cols] == 1)
                 {
-                    tetrisMatrix->map[(col + x - offX) + (row + y - offY) * tetrisMatrix->cols] = 1;
+                    if(insertFLAG == 1) //if flag is true
+                        tetrisMatrix->map[(col + x - offX) + (row + y - offY) * tetrisMatrix->cols] = 1; //insert
                 }
             }
         }
@@ -201,4 +203,31 @@ Tetramino* rotateTetramino(Tetramino* t){
     tr->heigth = t->width;
 
     return tr;
+}
+
+int gameEnded(Tetris* tetris){
+    //first thing to do, find the first position of empty x
+    int pos = -1;
+    for(int i=0; i<tetris->matrix->cols && pos == -1;i++){
+        if(tetris->matrix->map[i] == 0) pos = i;
+    }
+    //continue with the check
+    if(pos != -1){
+        Tetramino *tetramino;
+        for(int pieceType = 0; pieceType < 7; pieceType++){ //for every piece
+            tetramino = createTetramino(&tetramini[pieceType]);
+            for(int rotation=0; rotation<4; rotation++){ //test every rotation
+                for(int col=0; col< tetris->matrix->cols; col++){
+                    if (insertTetramino(tetris->matrix, tetramino, col, 0, GRAVITY, 0)){ //important to enable gravity
+
+                        //printw("\n\ntype: %d, rotation: %d, x: %d\n\n", pieceType, rotation, col);
+                        return 0;
+                    }
+                }
+                tetramino = rotateTetramino(tetramino);
+            }
+            deleteTetramino(tetramino); //free memory
+        }
+    }
+    return 1;
 }

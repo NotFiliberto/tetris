@@ -91,10 +91,16 @@ void switchTetraminoTask(Tetris *tetris)
 void insertTetraminoTask(Tetris *tetris)
 {
     clear();
-    insertTetramino(tetris->matrix, tetris->tetramino, tetris->lastX, 0, GRAVITY);
+    insertTetramino(tetris->matrix, tetris->tetramino, tetris->lastX, 0, GRAVITY, 1);
     printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
     printw("\n\n");
     printMatrix(tetris->matrix);
+
+    //check game status
+    if (gameEnded(tetris))
+    {
+        printw("\n\ngame ended");
+    }
 }
 
 void moveTetraminoTask(Tetris *tetris, char key)
@@ -122,5 +128,9 @@ void testing(Tetris *tetris)
 {
     clear(); // clear screen
 
+    if(gameEnded(tetris))
+        printw("game ended");
+    else 
+        printw("game NOT ended yet");
    
 }
