@@ -233,9 +233,9 @@ int gameEnded(Tetris* tetris){
 }
 
 void removeRow(Tetris* tetris, int row){
-    int startIndex = row * tetris->matrix->cols + tetris->matrix->cols;
-    for(int i=startIndex; i > 0; i--){
-        if(i>tetris->matrix->cols)
+    int startIndex = (row * tetris->matrix->cols + tetris->matrix->cols)-1;
+    for(int i=startIndex; i > -1; i--){
+        if(i>=tetris->matrix->cols)
             tetris->matrix->map[i] = tetris->matrix->map[i-tetris->matrix->cols]; //shift
         else
             tetris->matrix->map[i] = 0; // fill the first row with empty space
