@@ -231,3 +231,60 @@ int gameEnded(Tetris* tetris){
     }
     return 1;
 }
+
+void removeRow(Tetris* tetris, int row){
+    int startIndex = row * tetris->matrix->cols + tetris->matrix->cols;
+    for(int i=startIndex; i > 0; i--){
+        if(i>tetris->matrix->cols)
+            tetris->matrix->map[i] = tetris->matrix->map[i-tetris->matrix->cols]; //shift
+        else
+            tetris->matrix->map[i] = 0; // fill the first row with empty space
+    }
+}
+
+int* findRowsToRemove(Tetris* tetris, int* size){
+
+    (*size) = 0; //default
+    int i, j, fullRow = 1;
+    int *rowsToDelete = (int *)malloc(tetris->matrix->rows * sizeof(int)); 
+
+    for(i=0; i<tetris->matrix->rows; i++){
+
+        for(j=0; j<tetris->matrix->cols && fullRow; j++){
+            if(tetris->matrix->map[i*tetris->matrix->cols + j] == 0)
+                fullRow = 0; //not fullRow, so i cant delete it
+        }
+
+        if(fullRow){ //row to delete
+            rowsToDelete[(*size)++] = i; //increse size and save row index
+            //printw("row do delete added: %d, size [%d]\n", rowsToDelete[(*size)-1], (*size));
+        }
+        fullRow = 1;
+    }
+
+    if((*size) == 0)
+        rowsToDelete[(*size)++] = -1; // init, that means 0 rows found to remove
+
+    return rowsToDelete;
+}
+
+int scorePoints(Tetris* tetris){
+    int size, *rowsToDelete = findRowsToRemove(tetris, &size), points = 0;
+    int pointsBoard[] = {0,1,3,6,12,20,30};
+
+    if(rowsToDelete[0] != -1){
+
+        //points to assing based on calculated size
+        points = pointsBoard[size];
+
+        for(int i=0; i<size; i++){
+            removeRow(tetris, rowsToDelete[i]);
+        }
+
+        //rowsToDelete = findRowsToRemove(tetris, &size);
+    }
+
+    //printw("\npoints: %d\n", points);
+
+    return points;
+}

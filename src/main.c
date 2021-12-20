@@ -94,7 +94,13 @@ void insertTetraminoTask(Tetris *tetris)
     insertTetramino(tetris->matrix, tetris->tetramino, tetris->lastX, 0, GRAVITY, 1);
     printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
     printw("\n\n");
+
+    int points = scorePoints(tetris);
+
     printMatrix(tetris->matrix);
+    
+    if(points)
+        printw("\npoints: %d\n", points);
 
     //check game status
     if (gameEnded(tetris))
@@ -128,9 +134,9 @@ void testing(Tetris *tetris)
 {
     clear(); // clear screen
 
-    if(gameEnded(tetris))
-        printw("game ended");
-    else 
-        printw("game NOT ended yet");
-   
+    scorePoints(tetris);
+
+    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
+    printw("\n\n");
+    printMatrix(tetris->matrix);
 }
