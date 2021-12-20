@@ -1,6 +1,6 @@
 #include "include/headers.h"
 
-void switchTetraminoTask(Tetris *tetris);
+void switchTetraminoTask(Tetris *tetris, int incrementType);
 void insertTetraminoTask(Tetris *tetris);
 void moveTetraminoTask(Tetris *tetris, char key);
 void rotateTetraminoTask(Tetris *tetris);
@@ -36,7 +36,7 @@ int main(void)
             switch (key)
             {
             case '\n':
-                switchTetraminoTask(tetris);
+                switchTetraminoTask(tetris, 1);
                 break;
             case ' ':
                 insertTetraminoTask(tetris);
@@ -72,50 +72,75 @@ void init()
 {
 }
 
-void switchTetraminoTask(Tetris *tetris)
-{
-    clear(); // clear screen
-
-    tetris->tetraminoType = tetris->tetramino->code + 1; // next tetramino
-
-    deleteTetramino(tetris->tetramino);                                         // delete old tetramino and all his stuffs
-    tetris->tetramino = createTetramino(&tetramini[tetris->tetraminoType % 7]); // create new tetramino
-
-    tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); // check x pos for the visualization
-
+void printGameThings(Tetris *tetris){
     printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
     printw("\n\n");
     printMatrix(tetris->matrix);
-}
 
-void insertTetraminoTask(Tetris *tetris)
-{
-    clear();
-    insertTetramino(tetris->matrix, tetris->tetramino, tetris->lastX, 0, GRAVITY, 1);
-    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
     printw("\n\n");
-
-    int points = scorePoints(tetris);
-
-    printMatrix(tetris->matrix);
     
-    if(points)
-        printw("\npoints: %d\n", points);
+    if(totalAvailability(tetris) > 0)
+        printTetraminiAvailability(tetris); // check avaibility
+    else
+        printw("no avaible pieces");
 
-    //check game status
+    // check game status
     if (gameEnded(tetris))
     {
         printw("\n\ngame ended");
     }
 }
 
+void switchTetraminoTask(Tetris *tetris, int incrementType)
+{
+    clear(); // clear screen
+    
+    if(totalAvailability(tetris) > 0){
+        int previusTetraminoType = tetris->tetramino->code;
+
+        if(incrementType) //only in main game loop
+            tetris->tetraminoType = tetris->tetramino->code + 1; // next tetramino
+        tetris->tetraminoType = nextTetraminoAvailable(tetris); // if avaible return the incremente tetramino in the line before otherwhise it finds automatically the ones avalaible
+
+        if(previusTetraminoType != (tetris->tetraminoType %7)){ // to save current rotation
+            deleteTetramino(tetris->tetramino);                                         // delete old tetramino and all his stuffs
+            tetris->tetramino = createTetramino(&tetramini[tetris->tetraminoType % 7]); // create new tetramino
+        }
+
+        tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); // check x pos for the visualization
+
+    }
+    if (incrementType) // print things only if this task is called in the main loop
+        printGameThings(tetris);
+}
+
+void insertTetraminoTask(Tetris *tetris)
+{
+    clear();
+    int points = 0;
+
+    if(tetraminoAvailability(tetris, tetris->tetramino->code) > 0) {
+        if (insertTetramino(tetris->matrix, tetris->tetramino, tetris->lastX, 0, GRAVITY, 1)){
+            decrementTetraminoAvailability(tetris, tetris->tetramino->code);
+
+            points = scorePoints(tetris);
+
+            if (points)
+                printw("\npoints: %d\n", points);
+            //TODO: update score on tetris field
+
+            // swap piece automaticly
+            switchTetraminoTask(tetris, 0); // check next piece avaible
+        } 
+    }
+    printGameThings(tetris);
+}
+
 void moveTetraminoTask(Tetris *tetris, char key)
 {
     clear();
     tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, key);
-    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
-    printw("\n\n");
-    printMatrix(tetris->matrix);
+    printGameThings(tetris);
 }
 
 void rotateTetraminoTask(Tetris *tetris)
@@ -125,9 +150,7 @@ void rotateTetraminoTask(Tetris *tetris)
     tetris->tetramino = rotateTetramino(tetris->tetramino);
     tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); // fix the position
 
-    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
-    printw("\n\n");
-    printMatrix(tetris->matrix);
+    printGameThings(tetris);
 }
 
 void testing(Tetris *tetris)
@@ -136,7 +159,5 @@ void testing(Tetris *tetris)
 
     scorePoints(tetris);
 
-    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
-    printw("\n\n");
-    printMatrix(tetris->matrix);
+    printGameThings(tetris);
 }

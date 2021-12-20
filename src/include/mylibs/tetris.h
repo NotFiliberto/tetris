@@ -3,10 +3,12 @@
 
 typedef struct tetris
 {
-    Matrix *matrix;
-    Tetramino* tetramino; // current tetramino selected, with all of his options
-    int tetraminoType;
-    int lastX; // last X position for the last tetramino
+    Matrix *matrix;       // matrix map
+    Tetramino *tetramino; // current tetramino selected, with all of his options
+    int tetraminoType;    // type of current tetramino
+    int lastX;            // last X position for the last tetramino
+    int score;
+    int availableTetramini[7];
     // score
     // gamemode
     // ecc...
@@ -60,10 +62,16 @@ createTetris(int cols, int rows)
     tetris->matrix = createMatrix(cols, rows); // the fuction returns the pointer of the created matrix
     clearMatrix(tetris->matrix);               // set up the effective map to all 0
 
+    // avaible tetramini
+    for (int i = 0; i < 7; i++)
+    {
+        tetris->availableTetramini[i] = DEFAULT_AVAILABILITY;
+    }
+
     // FOR TESTING THINGS
-    //tetris->matrix = createMatrix(7, 10);
-    //free(tetris->matrix->map);
-    //tetris->matrix->map = testingMap;
+    // tetris->matrix = createMatrix(7, 10);
+    // free(tetris->matrix->map);
+    // tetris->matrix->map = testingMap;
     // FOR TESTING THINGS
 
     return tetris;
@@ -101,7 +109,7 @@ int isIntersected(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
     return 0;
 }
 
-//check if the y of the matrix in a specif x is empty or not for the width of the piece
+// check if the y of the matrix in a specif x is empty or not for the width of the piece
 int checkYRowPiece(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
 {
 
@@ -161,8 +169,8 @@ int insertTetramino(Matrix *tetrisMatrix, Tetramino *t, int x, int y, int gravit
             {
                 if (t->matrix.map[(col) + row * t->matrix.cols] == 1)
                 {
-                    if(insertFLAG == 1) //if flag is true
-                        tetrisMatrix->map[(col + x - offX) + (row + y - offY) * tetrisMatrix->cols] = 1; //insert
+                    if (insertFLAG == 1)                                                                 // if flag is true
+                        tetrisMatrix->map[(col + x - offX) + (row + y - offY) * tetrisMatrix->cols] = 1; // insert
                 }
             }
         }
@@ -189,10 +197,11 @@ Matrix *rotateMatrix90Clockwise(Matrix *matrix)
     return rotatedMatrix90Clockwise;
 }
 
-Tetramino* rotateTetramino(Tetramino* t){
+Tetramino *rotateTetramino(Tetramino *t)
+{
     Matrix *rotated = rotateMatrix90Clockwise(&t->matrix);
 
-    //deleteTetramino(t);
+    // deleteTetramino(t);
     Tetramino *tr = (Tetramino *)malloc(sizeof(Tetramino));
 
     tr->code = t->code;
@@ -205,86 +214,159 @@ Tetramino* rotateTetramino(Tetramino* t){
     return tr;
 }
 
-int gameEnded(Tetris* tetris){
-    //first thing to do, find the first position of empty x
-    int pos = -1;
-    for(int i=0; i<tetris->matrix->cols && pos == -1;i++){
-        if(tetris->matrix->map[i] == 0) pos = i;
-    }
-    //continue with the check
-    if(pos != -1){
-        Tetramino *tetramino;
-        for(int pieceType = 0; pieceType < 7; pieceType++){ //for every piece
-            tetramino = createTetramino(&tetramini[pieceType]);
-            for(int rotation=0; rotation<4; rotation++){ //test every rotation
-                for(int col=0; col< tetris->matrix->cols; col++){
-                    if (insertTetramino(tetris->matrix, tetramino, col, 0, GRAVITY, 0)){ //important to enable gravity
+// =====================================
+// ======= TETRAMINO AVAIBILITY ========
+// =====================================
 
-                        //printw("\n\ntype: %d, rotation: %d, x: %d\n\n", pieceType, rotation, col);
-                        return 0;
+int tetraminoAvailability(Tetris *tetris, int tetraminoCode)
+{
+    return tetris->availableTetramini[tetraminoCode];
+}
+
+int decrementTetraminoAvailability(Tetris *tetris, int tetraminoCode)
+{
+    if (tetris->availableTetramini[tetraminoCode] > 0)
+        return --tetris->availableTetramini[tetraminoCode]; // decrement
+    return -1;
+}
+
+void printTetraminiAvailability(Tetris *tetris)
+{
+    printw("[Type] => availability\n\n");
+    for (int i = 0; i < 7; i++)
+    {
+        printw("[%d] => %d ", i, tetris->availableTetramini[i]);
+    }
+}
+
+int totalAvailability(Tetris *tetris){
+    int tot=0, i=0;
+    for(int i=0; i<7; i++){
+        tot += tetris->availableTetramini[i];
+    }
+    return tot;
+}
+
+//usefull when u swap piece or u just insert new one
+int nextTetraminoAvailable(Tetris *tetris){
+
+    if(totalAvailability > 0){
+        for(int i=0; i<7; i++){
+            if(tetraminoAvailability(tetris, (tetris->tetraminoType + i) % 7) > 0)
+                return (tetris->tetraminoType + i) % 7;
+        }
+    }
+    return -1; //and the game is ended
+}
+
+// =====================================
+// ======= TETRAMINO AVAIBILITY ========
+// =====================================
+
+int gameEnded(Tetris *tetris)
+{
+    if(totalAvailability(tetris) == 0)
+        return 1; //game ended
+    
+    // first thing to do, find the first position of empty x
+    int pos = -1;
+    for (int i = 0; i < tetris->matrix->cols && pos == -1; i++)
+    {
+        if (tetris->matrix->map[i] == 0)
+            pos = i;
+    }
+    // continue with the check
+    if (pos != -1)
+    {
+        Tetramino *tetramino;
+        for (int pieceType = 0; pieceType < 7; pieceType++)
+        { // for every piece
+            if(tetraminoAvailability(tetris, pieceType) > 0){ //first check if the piece is avaible
+                tetramino = createTetramino(&tetramini[pieceType]);
+                for (int rotation = 0; rotation < 4; rotation++)
+                { // test every rotation
+                    for (int col = 0; col < tetris->matrix->cols; col++)
+                    {
+                        if (insertTetramino(tetris->matrix, tetramino, col, 0, GRAVITY, 0))
+                        { // important to enable gravity
+
+                            // printw("\n\ntype: %d, rotation: %d, x: %d\n\n", pieceType, rotation, col);
+                            return 0;
+                        }
                     }
+                    tetramino = rotateTetramino(tetramino);
                 }
-                tetramino = rotateTetramino(tetramino);
+                deleteTetramino(tetramino); // free memory
+            } else {
+                //otherwhise do nothing, dont check for this type of tetramino
             }
-            deleteTetramino(tetramino); //free memory
         }
     }
     return 1;
 }
 
-void removeRow(Tetris* tetris, int row){
-    int startIndex = (row * tetris->matrix->cols + tetris->matrix->cols)-1;
-    for(int i=startIndex; i > -1; i--){
-        if(i>=tetris->matrix->cols)
-            tetris->matrix->map[i] = tetris->matrix->map[i-tetris->matrix->cols]; //shift
+void removeRow(Tetris *tetris, int row)
+{
+    int startIndex = (row * tetris->matrix->cols + tetris->matrix->cols) - 1;
+    for (int i = startIndex; i > -1; i--)
+    {
+        if (i >= tetris->matrix->cols)
+            tetris->matrix->map[i] = tetris->matrix->map[i - tetris->matrix->cols]; // shift
         else
             tetris->matrix->map[i] = 0; // fill the first row with empty space
     }
 }
 
-int* findRowsToRemove(Tetris* tetris, int* size){
+int *findRowsToRemove(Tetris *tetris, int *size)
+{
 
-    (*size) = 0; //default
+    (*size) = 0; // default
     int i, j, fullRow = 1;
-    int *rowsToDelete = (int *)malloc(tetris->matrix->rows * sizeof(int)); 
+    int *rowsToDelete = (int *)malloc(tetris->matrix->rows * sizeof(int));
 
-    for(i=0; i<tetris->matrix->rows; i++){
+    for (i = 0; i < tetris->matrix->rows; i++)
+    {
 
-        for(j=0; j<tetris->matrix->cols && fullRow; j++){
-            if(tetris->matrix->map[i*tetris->matrix->cols + j] == 0)
-                fullRow = 0; //not fullRow, so i cant delete it
+        for (j = 0; j < tetris->matrix->cols && fullRow; j++)
+        {
+            if (tetris->matrix->map[i * tetris->matrix->cols + j] == 0)
+                fullRow = 0; // not fullRow, so i cant delete it
         }
 
-        if(fullRow){ //row to delete
-            rowsToDelete[(*size)++] = i; //increse size and save row index
-            //printw("row do delete added: %d, size [%d]\n", rowsToDelete[(*size)-1], (*size));
+        if (fullRow)
+        {                                // row to delete
+            rowsToDelete[(*size)++] = i; // increse size and save row index
+            // printw("row do delete added: %d, size [%d]\n", rowsToDelete[(*size)-1], (*size));
         }
         fullRow = 1;
     }
 
-    if((*size) == 0)
+    if ((*size) == 0)
         rowsToDelete[(*size)++] = -1; // init, that means 0 rows found to remove
 
     return rowsToDelete;
 }
 
-int scorePoints(Tetris* tetris){
+int scorePoints(Tetris *tetris)
+{
     int size, *rowsToDelete = findRowsToRemove(tetris, &size), points = 0;
-    int pointsBoard[] = {0,1,3,6,12,20,30};
+    int pointsBoard[] = {0, 1, 3, 6, 12, 20, 30};
 
-    if(rowsToDelete[0] != -1){
+    if (rowsToDelete[0] != -1)
+    {
 
-        //points to assing based on calculated size
+        // points to assing based on calculated size
         points = pointsBoard[size];
 
-        for(int i=0; i<size; i++){
+        for (int i = 0; i < size; i++)
+        {
             removeRow(tetris, rowsToDelete[i]);
         }
 
-        //rowsToDelete = findRowsToRemove(tetris, &size);
+        // rowsToDelete = findRowsToRemove(tetris, &size);
     }
 
-    //printw("\npoints: %d\n", points);
+    // printw("\npoints: %d\n", points);
 
     return points;
 }
