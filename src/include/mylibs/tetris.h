@@ -56,6 +56,7 @@ createTetris(int cols, int rows)
     Tetris *tetris = (Tetris *)malloc(sizeof(Tetris));
     tetris->tetraminoType = 0;
     tetris->lastX = 0;
+    tetris->score = 0;
 
     tetris->tetramino = createTetramino(&tetramini[TETRAMINO_I]); // copy tetramino I from the array
 

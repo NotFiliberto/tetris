@@ -79,6 +79,7 @@ void printGameThings(Tetris *tetris){
 
     printw("\n\n");
     
+    printw("Score: %d\n", tetris->score);
     if(totalAvailability(tetris) > 0)
         printTetraminiAvailability(tetris); // check avaibility
     else
@@ -125,8 +126,9 @@ void insertTetraminoTask(Tetris *tetris)
 
             points = scorePoints(tetris);
 
-            if (points)
-                printw("\npoints: %d\n", points);
+            if (points){
+                tetris->score += points;
+            }
             //TODO: update score on tetris field
 
             // swap piece automaticly
