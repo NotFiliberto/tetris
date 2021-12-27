@@ -93,12 +93,13 @@ void printGameThings(Tetris *tetris){
         printTetraminiAvailability(tetris); // check avaibility
     else{
         attron(COLOR_PAIR(3));
+        tetris->gameStatus = 1;
         printw("no avaible pieces");
         attroff(COLOR_PAIR(3));
     }
 
     // check game status
-    if (gameEnded(tetris))
+    if (tetris->gameStatus)
     {
         attron(COLOR_PAIR(3));
         printw("\n\ngame ended");
@@ -110,7 +111,7 @@ void switchTetraminoTask(Tetris *tetris, int incrementType)
 {
     clear(); // clear screen
     
-    if(totalAvailability(tetris) > 0){
+    if(totalAvailability(tetris) > 0 && !tetris->gameStatus){
         int previusTetraminoType = tetris->tetramino->code;
 
         if(incrementType) //only in main game loop
@@ -131,42 +132,48 @@ void switchTetraminoTask(Tetris *tetris, int incrementType)
 
 void insertTetraminoTask(Tetris *tetris)
 {
-    clear();
-    int points = 0;
+    if(!tetris->gameStatus){
 
-    if(tetraminoAvailability(tetris, tetris->tetramino->code) > 0) {
-        if (insertTetramino(tetris->matrix, tetris->tetramino, tetris->lastX, 0, GRAVITY, 1)){
-            decrementTetraminoAvailability(tetris, tetris->tetramino->code);
+        clear();
+        int points = 0;
+        if(tetraminoAvailability(tetris, tetris->tetramino->code) > 0) {
+            if (insertTetramino(tetris->matrix, tetris->tetramino, tetris->lastX, 0, GRAVITY, 1)){
+                decrementTetraminoAvailability(tetris, tetris->tetramino->code);
 
-            points = scorePoints(tetris);
+                points = scorePoints(tetris);
 
-            if (points){
-                tetris->score += points;
-            }
-            //TODO: update score on tetris field
+                if (points){
+                    tetris->score += points;
+                }
+                tetris->gameStatus = gameEnded(tetris);
 
-            // swap piece automaticly
-            switchTetraminoTask(tetris, 0); // check next piece avaible
-        } 
+                // swap piece automaticly
+                switchTetraminoTask(tetris, 0); // check next piece avaible
+            } 
+        }
+        printGameThings(tetris);
     }
-    printGameThings(tetris);
 }
 
 void moveTetraminoTask(Tetris *tetris, char key)
 {
-    clear();
-    tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, key);
-    printGameThings(tetris);
+    if(!tetris->gameStatus){
+        clear();
+        tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, key);
+        printGameThings(tetris);
+    }
 }
 
 void rotateTetraminoTask(Tetris *tetris)
 {
-    clear();
+    if(!tetris->gameStatus){
+        clear();
 
-    tetris->tetramino = rotateTetramino(tetris->tetramino);
-    tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); // fix the position
+        tetris->tetramino = rotateTetramino(tetris->tetramino);
+        tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); // fix the position
 
-    printGameThings(tetris);
+        printGameThings(tetris);
+    }
 }
 
 void testing(Tetris *tetris)

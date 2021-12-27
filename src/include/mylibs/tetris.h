@@ -9,6 +9,7 @@ typedef struct tetris
     int lastX;            // last X position for the last tetramino
     int score;
     int availableTetramini[7];
+    int gameStatus; //0 not finished
     // ecc...
 } Tetris;
 
@@ -55,6 +56,7 @@ createTetris(int cols, int rows)
     tetris->tetraminoType = 0;
     tetris->lastX = 0;
     tetris->score = 0;
+    tetris->gameStatus = 0; //not finished
 
     tetris->tetramino = createTetramino(&tetramini[TETRAMINO_I]); // copy tetramino I from the array
 

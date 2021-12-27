@@ -28,14 +28,11 @@ void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY, int prin
         if (printWalls && !tetramino)
         {
             if ((col + row * matrix->cols) % matrix->cols == 0)
-            {
                 printw("#");
-            }
         }
         else
-        {
+
             printw(" "); // ad left space for correct visualization of the waall
-        }
 
         for (col = offsetX; col < matrix->cols; col++)
         {
@@ -49,9 +46,7 @@ void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY, int prin
         {
             // if(row==0) printw("-> col: %d", col);
             if ((col + row * matrix->cols) % matrix->cols == 0)
-            {
                 printw("#");
-            }
         }
 
         printw("\n");
@@ -63,9 +58,14 @@ void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY, int prin
             printw(" "); // space for better visualization
 
         int j = 0;
-        for (j = 0; j < matrix->cols +2; j++) //left and right walls
+        for (j = 0; j < matrix->cols + 2; j++) // left and right walls
         {
             printw("#");
         }
+    }
+
+    //preventi moving matrix to the bottom while switching between tetramino I and other types
+    if(tetramino){
+        if(matrix->rows == 3) printw("\n");
     }
 }
