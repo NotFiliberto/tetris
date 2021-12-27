@@ -64,8 +64,12 @@ void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY, int prin
         }
     }
 
-    //preventi moving matrix to the bottom while switching between tetramino I and other types
+    //prevent moving matrix to the bottom while switching/rotating the tetramino
     if(tetramino){
-        if(matrix->rows == 3) printw("\n");
+        //printw("offsetX: %d, offsetY: %d\n", offsetX, offsetY);
+        for(int i=0; i<offsetY; i++){
+            printw("\n");
+        }
+        if(matrix->rows == 3) printw("\n"); //add line for every piece exept I
     }
 }

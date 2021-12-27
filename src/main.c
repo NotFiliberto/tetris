@@ -73,11 +73,6 @@ void init()
 }
 
 void printGameThings(Tetris *tetris){
-    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY, WALLS, 1);
-    printw("\n\n");
-    printMatrixW(tetris->matrix, 0, 0, 0, WALLS, 0);
-
-    printw("\n\n");
 
     //colors =======
     init_pair(2, COLOR_WHITE, COLOR_MAGENTA); // score
@@ -93,7 +88,7 @@ void printGameThings(Tetris *tetris){
         printTetraminiAvailability(tetris); // check avaibility
     else{
         attron(COLOR_PAIR(3));
-        printw("no avaible pieces");
+        printw("\nno avaible pieces");
         attroff(COLOR_PAIR(3));
     }
 
@@ -101,9 +96,14 @@ void printGameThings(Tetris *tetris){
     if (tetris->gameStatus == 1)
     {
         attron(COLOR_PAIR(3));
-        printw("\n\ngame ended");
+        printw("\ngame ended");
         attroff(COLOR_PAIR(3));
     }
+
+    printw("\n\n");
+    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY, WALLS, 1);
+    printMatrixW(tetris->matrix, 0, 0, 0, WALLS, 0);
+    printw("\n\n");
 }
 
 void switchTetraminoTask(Tetris *tetris, int incrementType)
@@ -177,8 +177,6 @@ void rotateTetraminoTask(Tetris *tetris)
 void testing(Tetris *tetris)
 {
     clear(); // clear screen
-
-    scorePoints(tetris);
-
     printGameThings(tetris);
+    printw("--> testing");
 }
