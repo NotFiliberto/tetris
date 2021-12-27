@@ -95,3 +95,11 @@ int offsetY(Tetramino *t)
     }
     return -1; // if empty matrix
 }
+
+char typeToLetter(int type){
+    if(type >=0 && type < 8){
+        char* letters = "IJLOSZT";
+        return letters[type];
+    }
+    return ' ';
+}

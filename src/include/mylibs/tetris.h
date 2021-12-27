@@ -222,10 +222,19 @@ int decrementTetraminoAvailability(Tetris *tetris, int tetraminoCode)
 
 void printTetraminiAvailability(Tetris *tetris)
 {
-    printw("[Current Type %d] => %d\n\n", tetris->tetramino->code, tetris->availableTetramini[tetris->tetramino->code]);
+    init_pair(1, COLOR_WHITE, COLOR_CYAN);
+    //printw("[Current Type %c] > %d\n\n", typeToLetter(tetris->tetramino->code), tetris->availableTetramini[tetris->tetramino->code]);
     for (int i = 0; i < 7; i++)
     {
-        printw("[%d] => %d ", i, tetris->availableTetramini[i]);
+        if (i > 1 && i % 2 == 0)
+            printw("\n");
+        if(i == tetris->tetramino->code){
+            init_color(COLOR_CYAN, 175, 238, 238);
+            attron(COLOR_PAIR(1));
+        }
+        printw("[%c] > %d ", typeToLetter(i), tetris->availableTetramini[i]);
+        if (i == tetris->tetramino->code)
+            attroff(COLOR_PAIR(1));
     }
 }
 

@@ -18,7 +18,7 @@ int main(void)
     nodelay(win, TRUE);
     noecho();
 
-    // printw("Press ESC to exit.\n"); // instead of printf
+    start_color();
 
     Tetris *tetris = createTetris(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     printGameThings(tetris);
@@ -59,6 +59,7 @@ int main(void)
                 break;
             }
         }
+        refresh();
     }
 
     deleteTetris(tetris);
@@ -77,17 +78,31 @@ void printGameThings(Tetris *tetris){
     printMatrixW(tetris->matrix, 0, 0, 0, WALLS, 0);
 
     printw("\n\n");
+
+    //colors =======
+    init_pair(2, COLOR_WHITE, COLOR_MAGENTA); // score
+    init_pair(3, COLOR_WHITE, COLOR_RED);  // END GAME
     
-    printw("Score: %d\n", tetris->score);
+    // colors =======
+
+    attron(COLOR_PAIR(2));
+    printw("Score: %d\n\n", tetris->score);
+    attroff(COLOR_PAIR(2));
+
     if(totalAvailability(tetris) > 0)
         printTetraminiAvailability(tetris); // check avaibility
-    else
+    else{
+        attron(COLOR_PAIR(3));
         printw("no avaible pieces");
+        attroff(COLOR_PAIR(3));
+    }
 
     // check game status
     if (gameEnded(tetris))
     {
+        attron(COLOR_PAIR(3));
         printw("\n\ngame ended");
+        attroff(COLOR_PAIR(3));
     }
 }
 
