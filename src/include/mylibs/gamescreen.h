@@ -8,27 +8,64 @@ int tetraminoXMoving(Tetramino *t, int x, char input)
         if (input == 'D' && (x + t->width < DEFAULT_WIDTH))
             x += op;
     }
-    if(input == '\n'){
+    if (input == '\n')
+    {
         if ((x + t->width > DEFAULT_WIDTH))
-            x = DEFAULT_WIDTH-t->width;
+            x = DEFAULT_WIDTH - t->width;
     }
 
     return x;
 }
 
-void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY)
+void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY, int printWalls, int tetramino)
 {
-    for (int row = offsetY; row < matrix->rows; row++)
+    int row = 0, col = 0, i = 0;
+    for (row = offsetY; row < matrix->rows; row++)
     {
-        for (int i = 0; i < rspace; i++)
+        for (i = 0; i < rspace; i++)
             printw(" "); // space for better visualization
-        for (int col = offsetX; col < matrix->cols; col++)
+
+        if (printWalls && !tetramino)
+        {
+            if ((col + row * matrix->cols) % matrix->cols == 0)
+            {
+                printw("#");
+            }
+        }
+        else
+        {
+            printw(" "); // ad left space for correct visualization of the waall
+        }
+
+        for (col = offsetX; col < matrix->cols; col++)
         {
             if (matrix->map[col + row * matrix->cols] == 1)
                 printw("%c", '@');
             else
-                printw("%c", '.');
+                printw("%c", ' ');
         }
+
+        if (printWalls && !tetramino)
+        {
+            // if(row==0) printw("-> col: %d", col);
+            if ((col + row * matrix->cols) % matrix->cols == 0)
+            {
+                printw("#");
+            }
+        }
+
         printw("\n");
+    }
+
+    if (printWalls && !tetramino)
+    {
+        for (i = 0; i < rspace; i++)
+            printw(" "); // space for better visualization
+
+        int j = 0;
+        for (j = 0; j < matrix->cols +2; j++) //left and right walls
+        {
+            printw("#");
+        }
     }
 }

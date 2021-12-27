@@ -1,5 +1,6 @@
 #include "include/headers.h"
 
+void printGameThings(Tetris *tetris);
 void switchTetraminoTask(Tetris *tetris, int incrementType);
 void insertTetraminoTask(Tetris *tetris);
 void moveTetraminoTask(Tetris *tetris, char key);
@@ -20,9 +21,7 @@ int main(void)
     // printw("Press ESC to exit.\n"); // instead of printf
 
     Tetris *tetris = createTetris(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
-    printw("\n\n");
-    printMatrix(tetris->matrix);
+    printGameThings(tetris);
 
     while (1 && key != ESC)
     {
@@ -73,9 +72,9 @@ void init()
 }
 
 void printGameThings(Tetris *tetris){
-    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY);
+    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY, WALLS, 1);
     printw("\n\n");
-    printMatrix(tetris->matrix);
+    printMatrixW(tetris->matrix, 0, 0, 0, WALLS, 0);
 
     printw("\n\n");
     

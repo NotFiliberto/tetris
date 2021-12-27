@@ -9,8 +9,6 @@ typedef struct tetris
     int lastX;            // last X position for the last tetramino
     int score;
     int availableTetramini[7];
-    // score
-    // gamemode
     // ecc...
 } Tetris;
 
@@ -92,16 +90,10 @@ int isIntersected(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
     int startXTetramino = offsetX(t);
     int startYTetramino = offsetY(t);
 
-    // printw("\nh: %d\nw: %d\nstart tetramino x: %d\nstart tetramino y: %d\nconsider this --> \n", t->heigth, t->width, startXTetramino, startYTetramino);
-
     for (int i = 0; i < t->heigth; i++)
     {
         for (int j = 0; j < t->width; j++)
         {
-            // printf("%d ", i * t->matrix.cols + j);
-            // printf("%d", t->matrix.map[(i+startYTetramino) * t->matrix.cols + (j + startXTetramino)]);
-            // printf("%d", tetrisMatrix->map[(y+i) * tetrisMatrix->cols + (x+j)]);
-
             if (t->matrix.map[(i + startYTetramino) * t->matrix.cols + (j + startXTetramino)] == 1 && tetrisMatrix->map[(y + i) * tetrisMatrix->cols + (x + j)] == 1)
                 return 1;
         }
@@ -151,9 +143,6 @@ int insertTetramino(Matrix *tetrisMatrix, Tetramino *t, int x, int y, int gravit
 
     if (x + t->width <= DEFAULT_WIDTH)
     {
-        // printf("intersected: %d\n", isIntersected(tetrisMatrix, t, x, 8));
-        // printw("\n-->y: %d <--\n", findY(tetrisMatrix, t, x));
-
         if (gravity)                       // if set the tetramine will go to the bottom of the main matrix
             y = findY(tetrisMatrix, t, x); // y will be overwritten
         else
