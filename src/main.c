@@ -31,7 +31,7 @@ int main(void)
             if (key == ESC && getch() == '[')
                 key = getch(); // prevent exit if user press ARROW KEYS becuase when it happen getch will push 3 values into the buffer (ESC + [ + ARROW_KEY)
             // printw("%c", toupper(key));
-
+            
             switch (key)
             {
             case '\n':
@@ -93,13 +93,12 @@ void printGameThings(Tetris *tetris){
         printTetraminiAvailability(tetris); // check avaibility
     else{
         attron(COLOR_PAIR(3));
-        tetris->gameStatus = 1;
         printw("no avaible pieces");
         attroff(COLOR_PAIR(3));
     }
 
     // check game status
-    if (tetris->gameStatus)
+    if (tetris->gameStatus == 1)
     {
         attron(COLOR_PAIR(3));
         printw("\n\ngame ended");
@@ -110,17 +109,16 @@ void printGameThings(Tetris *tetris){
 void switchTetraminoTask(Tetris *tetris, int incrementType)
 {
     clear(); // clear screen
-    
     if(totalAvailability(tetris) > 0 && !tetris->gameStatus){
-        int previusTetraminoType = tetris->tetramino->code;
+        int currentTetraminoType = tetris->tetramino->code;
 
         if(incrementType) //only in main game loop
-            tetris->tetraminoType = tetris->tetramino->code + 1; // next tetramino
+            tetris->tetraminoType = (tetris->tetramino->code + 1) % 7; // next tetramino
         tetris->tetraminoType = nextTetraminoAvailable(tetris); // if avaible return the incremente tetramino in the line before otherwhise it finds automatically the ones avalaible
 
-        if(previusTetraminoType != (tetris->tetraminoType %7)){ // to save current rotation
+        if(currentTetraminoType != (tetris->tetraminoType)){ // to save current rotation
             deleteTetramino(tetris->tetramino);                                         // delete old tetramino and all his stuffs
-            tetris->tetramino = createTetramino(&tetramini[tetris->tetraminoType % 7]); // create new tetramino
+            tetris->tetramino = createTetramino(&tetramini[tetris->tetraminoType]); // create new tetramino
         }
 
         tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); // check x pos for the visualization
@@ -133,7 +131,6 @@ void switchTetraminoTask(Tetris *tetris, int incrementType)
 void insertTetraminoTask(Tetris *tetris)
 {
     if(!tetris->gameStatus){
-
         clear();
         int points = 0;
         if(tetraminoAvailability(tetris, tetris->tetramino->code) > 0) {
@@ -147,8 +144,8 @@ void insertTetraminoTask(Tetris *tetris)
                 }
                 tetris->gameStatus = gameEnded(tetris);
 
-                // swap piece automaticly
-                switchTetraminoTask(tetris, 0); // check next piece avaible
+                if(!tetris->gameStatus) // swap piece automaticly if needed
+                    switchTetraminoTask(tetris, 0); // check next piece avaible
             } 
         }
         printGameThings(tetris);
@@ -167,6 +164,7 @@ void moveTetraminoTask(Tetris *tetris, char key)
 void rotateTetraminoTask(Tetris *tetris)
 {
     if(!tetris->gameStatus){
+
         clear();
 
         tetris->tetramino = rotateTetramino(tetris->tetramino);
