@@ -1,14 +1,32 @@
+WINDOW* initScreen()
+{
+    WINDOW *win;
+
+    // initialization
+    win = initscr(); // new screen will be created
+    nodelay(win, TRUE);
+    noecho();
+
+    start_color();
+    return win;
+}
+
+void endScreen()
+{
+    endwin();
+}
+
 int tetraminoXMoving(Tetramino *t, int x, char input)
 {
-    if (input == 'A' || input == 'D')
+    if (input == MOVE_LEFT || input == MOVE_RIGHT)
     {
-        int op = (input == 'A') ? -1 : 1;
-        if (input == 'A' && (x - 1 > -1))
+        int op = (input == MOVE_LEFT) ? -1 : 1;
+        if (input == MOVE_LEFT && (x - 1 > -1))
             x += op;
-        if (input == 'D' && (x + t->width < DEFAULT_WIDTH))
+        if (input == MOVE_RIGHT && (x + t->width < DEFAULT_WIDTH))
             x += op;
     }
-    if (input == '\n')
+    if (input == SWITCH)
     {
         if ((x + t->width > DEFAULT_WIDTH))
             x = DEFAULT_WIDTH - t->width;
@@ -23,44 +41,44 @@ void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY, int prin
     for (row = offsetY; row < matrix->rows; row++)
     {
         for (i = 0; i < rspace; i++)
-            printw(" "); // space for better visualization
+            printw(EMPTY_SPACE); // space for better visualization
 
         if (printWalls && !tetramino)
         {
             if ((col + row * matrix->cols) % matrix->cols == 0)
-                printw("#");
+                printw(WALL);
         }
         else
 
-            printw(" "); // ad left space for correct visualization of the waall
+            printw(EMPTY_SPACE); // ad left space for correct visualization of the waall
 
         for (col = offsetX; col < matrix->cols; col++)
         {
             if (matrix->map[col + row * matrix->cols] == 1)
-                printw("%c", '@');
+                printw(PIECE);
             else
-                printw("%c", ' ');
+                printw(EMPTY_SPACE);
         }
 
         if (printWalls && !tetramino)
         {
             // if(row==0) printw("-> col: %d", col);
             if ((col + row * matrix->cols) % matrix->cols == 0)
-                printw("#");
+                printw(WALL);
         }
 
-        printw("\n");
+        NEW_LINE
     }
 
     if (printWalls && !tetramino)
     {
         for (i = 0; i < rspace; i++)
-            printw(" "); // space for better visualization
+            printw(EMPTY_SPACE); // space for better visualization
 
         int j = 0;
         for (j = 0; j < matrix->cols + 2; j++) // left and right walls
         {
-            printw("#");
+            printw(WALL);
         }
     }
 
@@ -68,8 +86,24 @@ void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY, int prin
     if(tetramino){
         //printw("offsetX: %d, offsetY: %d\n", offsetX, offsetY);
         for(int i=0; i<offsetY; i++){
-            printw("\n");
+            NEW_LINE
         }
-        if(matrix->rows == 3) printw("\n"); //add line for every piece exept I
+        if(matrix->rows == 3) NEW_LINE //add line for every piece exept I
     }
+}
+
+//printc with colors
+void printwc(WINDOW* win, int textColor, int textBackground, char* text, ...)
+{
+    int pairnumber = textColor + textBackground; //problem with ncurses it saves this number in init_pair so i have to chage it with different colors combinations
+    init_pair(pairnumber, textColor, textBackground);
+    attron(COLOR_PAIR(pairnumber));
+
+    va_list args;
+
+    va_start(args, text);
+    vwprintw(win, text, args);
+    va_end(args);
+
+    attroff(COLOR_PAIR(pairnumber));
 }

@@ -3,7 +3,25 @@
 #define ESC 27
 #define GRAVITY 1 //ENABLED by default
 #define DEFAULT_AVAILABILITY 5
-#define WALLS 1
+#define SHOW_WALLS 1
 
+//controls
+#define SWITCH ' '
+#define MOVE_DOWN 'S'
+#define MOVE_UP 'W'
+#define MOVE_RIGHT 'D'
+#define MOVE_LEFT 'A'
+#define SELECT '\n'
 
-//colors
+//graphic
+#define EMPTY_SPACE " "
+#define WALL "#"
+#define PIECE "@"
+
+//gamemodes
+#define SINGLE_PLAYER 0
+#define MULTI_PLAYER 1
+#define VS_CPU 2
+
+//usefull
+#define NEW_LINE printw("\n");

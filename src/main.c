@@ -1,182 +1,77 @@
-#include "include/headers.h"
+#include "gamemodes/gamemodes.h"
 
-void printGameThings(Tetris *tetris);
-void switchTetraminoTask(Tetris *tetris, int incrementType);
-void insertTetraminoTask(Tetris *tetris);
-void moveTetraminoTask(Tetris *tetris, char key);
-void rotateTetraminoTask(Tetris *tetris);
-
-void testing(Tetris *tetris);
+void printMenu(WINDOW* win, int gamemode);
 
 int main(void)
 {
+
     char key;
-    WINDOW *win;
+    int gamemode = 0;
+    int gamemodeSelected = 0;
 
-    // initialization
-    win = initscr(); // new screen will be created
-    nodelay(win, TRUE);
-    noecho();
+    WINDOW *win = initScreen();
 
-    start_color();
-
-    Tetris *tetris = createTetris(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-    printGameThings(tetris);
-
-    while (1 && key != ESC)
+    do
     {
+        clear();
+        printMenu(win, gamemode);
+
         key = toupper(getch());
         if (key > -1)
         { // default is -1 if u dont press anything
             if (key == ESC && getch() == '[')
-                key = getch(); // prevent exit if user press ARROW KEYS becuase when it happen getch will push 3 values into the buffer (ESC + [ + ARROW_KEY)
-            // printw("%c", toupper(key));
-            
+                key = getch(); 
+
             switch (key)
             {
-            case '\n':
-                switchTetraminoTask(tetris, 1);
-                break;
-            case ' ':
-                insertTetraminoTask(tetris);
+            case MOVE_UP:
+                gamemode = Mod((gamemode - 1), 3);
                 break;
 
-            case 'A': // left
-                moveTetraminoTask(tetris, key);
+            case MOVE_DOWN: // left
+                gamemode = Mod((gamemode + 1), 3);
                 break;
 
-            case 'D': // right
-                moveTetraminoTask(tetris, key);
-                break;
-            case 'W':
-                rotateTetraminoTask(tetris);
-                break;
-            case '-': // for testing stuffs
-                testing(tetris);
-                break;
-
-            default:
+            case SELECT:
+                gamemodeSelected = 1;
                 break;
             }
+
+            // start game if selected
+            if (gamemodeSelected)
+            {
+                switch (gamemode)
+                {
+                case SINGLE_PLAYER:
+                    singlePlayer();
+                    break;
+                }
+            }
+            gamemodeSelected = 0; //reset because if player return back to menu after a game
         }
         refresh();
-    }
 
-    deleteTetris(tetris);
+    } while (key != ESC && gamemode != -1);
 
-    endwin();
+    endScreen();
     return 0;
 }
 
-void init()
-{
-}
+void printMenu(WINDOW* win, int gamemode){
 
-void printGameThings(Tetris *tetris){
+    printwc(win, COLOR_WHITE, COLOR_BLUE, "SELECT GAMEMODE\n\n", gamemode);
 
-    //colors =======
-    init_pair(2, COLOR_WHITE, COLOR_MAGENTA); // score
-    init_pair(3, COLOR_WHITE, COLOR_RED);  // END GAME
-    
-    // colors =======
+    char* gamemodes[] = {"Single Player", "Multi Player", "VS CPU"};
 
-    attron(COLOR_PAIR(2));
-    printw("Score: %d\n\n", tetris->score);
-    attroff(COLOR_PAIR(2));
+    for(int i=0; i<3; i++){
+        if(i==gamemode) printw("[ ");
 
-    if(totalAvailability(tetris) > 0)
-        printTetraminiAvailability(tetris); // check avaibility
-    else{
-        attron(COLOR_PAIR(3));
-        printw("\nno avaible pieces");
-        attroff(COLOR_PAIR(3));
+        printw("%s", gamemodes[i]);
+
+        if(i==gamemode) printw(" ]");
+
+        NEW_LINE
     }
 
-    // check game status
-    if (tetris->gameStatus == 1)
-    {
-        attron(COLOR_PAIR(3));
-        printw("\ngame ended");
-        attroff(COLOR_PAIR(3));
-    }
-
-    printw("\n\n");
-    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY, WALLS, 1);
-    printMatrixW(tetris->matrix, 0, 0, 0, WALLS, 0);
-    printw("\n\n");
-}
-
-void switchTetraminoTask(Tetris *tetris, int incrementType)
-{
-    clear(); // clear screen
-    if(totalAvailability(tetris) > 0 && !tetris->gameStatus){
-        int currentTetraminoType = tetris->tetramino->code;
-
-        if(incrementType) //only in main game loop
-            tetris->tetraminoType = (tetris->tetramino->code + 1) % 7; // next tetramino
-        tetris->tetraminoType = nextTetraminoAvailable(tetris); // if avaible return the incremente tetramino in the line before otherwhise it finds automatically the ones avalaible
-
-        if(currentTetraminoType != (tetris->tetraminoType)){ // to save current rotation
-            deleteTetramino(tetris->tetramino);                                         // delete old tetramino and all his stuffs
-            tetris->tetramino = createTetramino(&tetramini[tetris->tetraminoType]); // create new tetramino
-        }
-
-        tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); // check x pos for the visualization
-
-    }
-    if (incrementType) // print things only if this task is called in the main loop
-        printGameThings(tetris);
-}
-
-void insertTetraminoTask(Tetris *tetris)
-{
-    if(!tetris->gameStatus){
-        clear();
-        int points = 0;
-        if(tetraminoAvailability(tetris, tetris->tetramino->code) > 0) {
-            if (insertTetramino(tetris->matrix, tetris->tetramino, tetris->lastX, 0, GRAVITY, 1)){
-                decrementTetraminoAvailability(tetris, tetris->tetramino->code);
-
-                points = scorePoints(tetris);
-
-                if (points){
-                    tetris->score += points;
-                }
-                tetris->gameStatus = gameEnded(tetris);
-
-                if(!tetris->gameStatus) // swap piece automaticly if needed
-                    switchTetraminoTask(tetris, 0); // check next piece avaible
-            } 
-        }
-        printGameThings(tetris);
-    }
-}
-
-void moveTetraminoTask(Tetris *tetris, char key)
-{
-    if(!tetris->gameStatus){
-        clear();
-        tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, key);
-        printGameThings(tetris);
-    }
-}
-
-void rotateTetraminoTask(Tetris *tetris)
-{
-    if(!tetris->gameStatus){
-
-        clear();
-
-        tetris->tetramino = rotateTetramino(tetris->tetramino);
-        tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, '\n'); // fix the position
-
-        printGameThings(tetris);
-    }
-}
-
-void testing(Tetris *tetris)
-{
-    clear(); // clear screen
-    printGameThings(tetris);
-    printw("--> testing");
+    printw("\n\nPress ESC to exit...");
 }
