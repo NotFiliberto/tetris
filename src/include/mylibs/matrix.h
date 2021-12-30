@@ -25,9 +25,8 @@ Matrix *createMatrix(int cols, int rows)
 
 void deleteMatrix(Matrix *matrix)
 {
-    // for (int row = 0; row < matrix->rows; row++)
-    //     free(matrix->map[row]);
-    // free(matrix->map); //for some reason i have to commend this line becuase (error?)
+/*     for (int i = 0; i < (matrix->rows * matrix->cols); i++)
+        free(&matrix->map[i]); */
     free(matrix);
 }
 

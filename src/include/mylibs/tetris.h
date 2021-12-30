@@ -8,7 +8,7 @@ typedef struct tetris
     int tetraminoType;    // type of current tetramino
     int lastX;            // last X position for the last tetramino
     int score;
-    int availableTetramini[7];
+    int* availableTetramini;
     int gameStatus; //0 not finished
     // ecc...
 } Tetris;
@@ -64,6 +64,8 @@ createTetris(int cols, int rows)
     clearMatrix(tetris->matrix);               // set up the effective map to all 0
 
     // avaible tetramini
+
+    tetris->availableTetramini = (int *)malloc(sizeof(int) * 7);
     for (int i = 0; i < 7; i++)
     {
         tetris->availableTetramini[i] = DEFAULT_AVAILABILITY;
