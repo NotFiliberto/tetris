@@ -45,6 +45,9 @@ int main(void)
                 case SINGLE_PLAYER:
                     singlePlayer();
                     break;
+                case MULTI_PLAYER: 
+                    multiplayer();
+                    break;
                 }
             }
             gamemodeSelected = 0; //reset because if player return back to menu after a game

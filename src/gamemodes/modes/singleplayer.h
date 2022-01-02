@@ -1,5 +1,3 @@
-#include "../../include/headers.h"
-
 void printGameThings(Tetris *tetris, WINDOW *win);
 void switchTetraminoTask(Tetris *tetris, WINDOW *win, int incrementType);
 void insertTetraminoTask(Tetris *tetris, WINDOW *win);
