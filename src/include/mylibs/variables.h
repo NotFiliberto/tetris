@@ -25,3 +25,14 @@
 
 //usefull
 #define NEW_LINE printw("\n");
+
+//For colors
+typedef struct playerColor{
+    int textColor;
+    int backgroudColor;
+} PlayerColor;
+
+PlayerColor playerColors[] = {
+    {COLOR_WHITE, COLOR_MAGENTA},
+    {COLOR_MAGENTA, COLOR_WHITE}
+};
