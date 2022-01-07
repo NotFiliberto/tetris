@@ -35,12 +35,13 @@ int tetraminoXMoving(Tetramino *t, int x, char input)
     return x;
 }
 
-void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY, int printWalls, int tetramino)
+void printMatrixW(WINDOW *win, Matrix *matrix, int lastXPos, int offsetX, int offsetY, int printWalls, int tetramino)
 {
     int row = 0, col = 0, i = 0;
+    int xScreenStart = getcurx(win), yScreenStart = getcury(win); // coord cursor of window screen
     for (row = offsetY; row < matrix->rows; row++)
     {
-        for (i = 0; i < rspace; i++)
+        for (i = 0; i < lastXPos; i++)
             printw(EMPTY_SPACE); // space for better visualization
 
         if (printWalls && !tetramino)
@@ -67,12 +68,13 @@ void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY, int prin
                 printw(WALL);
         }
 
-        NEW_LINE
+        // NEW_LINE
+        wmove(win, getcury(win) + 1,xScreenStart);
     }
 
     if (printWalls && !tetramino)
     {
-        for (i = 0; i < rspace; i++)
+        for (i = 0; i < lastXPos; i++)
             printw(EMPTY_SPACE); // space for better visualization
 
         int j = 0;
@@ -88,10 +90,14 @@ void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY, int prin
         // printw("offsetX: %d, offsetY: %d\n", offsetX, offsetY);
         for (int i = 0; i < offsetY; i++)
         {
-            NEW_LINE
+            // NEW_LINE
+            wmove(win, getcury(win) + 1,xScreenStart);
         }
         if (matrix->rows == 3)
-            NEW_LINE // add line for every piece exept I
+        {
+            // NEW_LINE // add line for every piece exept I
+            wmove(win, getcury(win) + 1,xScreenStart);
+        }
     }
 }
 
@@ -114,15 +120,17 @@ void printwc(WINDOW *win, int textColor, int textBackground, int pairCodeModifie
 
 // new printing functions ===================
 
-void printGameStats(Tetris* tetris[2], int n, WINDOW *win)
+void printGameStats(Tetris *tetris[], int n, int playerTurn, WINDOW *win)
 {
+
+    int yScreenStart = getcury(win);
     // score
     for (int i = 0; i < n; i++)
     {
+        wmove(win, yScreenStart, SPACE_BETWEEH_GAMES * i);
         printwc(win, playerColors[i].textColor, playerColors[i].backgroudColor, i, "Score player [%d]: %d", i, tetris[i]->score);
-        printw("\t"); //black space
     }
-
+    
     NEW_LINE
 
     for (int i = 0; i < n; i++)
@@ -130,22 +138,30 @@ void printGameStats(Tetris* tetris[2], int n, WINDOW *win)
         // check game status
         if (tetris[i]->gameStatus == 1)
         {
-            printwc(win, playerColors[i].textColor, playerColors[i].backgroudColor, 0, "\nGAME ENDED");
+            char endGameStr[] = "The game is over!";
+            wmove(win, getcury(win)+1, ((SPACE_BETWEEH_GAMES * (n-1)) + DEFAULT_WIDTH)/2 - (strlen(endGameStr)/2));
+            printwc(win, COLOR_WHITE, COLOR_RED, 0, endGameStr);
         }
     }
 
     NEW_LINE
     NEW_LINE
 
-    printTetraminiAvailability(tetris[0]); // 0 or 1 is the same cuz they have the same pull
+    printTetraminiAvailability(tetris[playerTurn], 7); // the availability and piece selected change based on the player turn
 }
 
-void printTetris(Tetris *tetris[], int n, WINDOW *win)
+void printTetris(Tetris *tetris[], int n, int playerTurn, WINDOW *win)
 {
+    printw("\n\n");
+
+    int yScreenStart = getcury(win);
     for (int i = 0; i < n; i++)
     {
+        wmove(win, yScreenStart, SPACE_BETWEEH_GAMES * i);
 
-        // printGameStats(tetris, n, win);
-        // printTetrisMap(tetris->matrix);
+        printMatrixW(win, &tetris[i]->tetramino->matrix, tetris[i]->lastX, tetris[i]->tetramino->offsetX, tetris[i]->tetramino->offsetY, SHOW_WALLS, 1);
+        printMatrixW(win, tetris[i]->matrix, 0, 0, 0, SHOW_WALLS, 0);
     }
+
+    printw("\n\n");
 }

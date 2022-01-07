@@ -17,6 +17,8 @@
 #define EMPTY_SPACE " "
 #define WALL "#"
 #define PIECE "@"
+#define SPACE_BETWEEN_PLAYERS_SCREEN 25
+#define SPACE_BETWEEH_GAMES (DEFAULT_WIDTH + 2 + SPACE_BETWEEN_PLAYERS_SCREEN)
 
 //gamemodes
 #define SINGLE_PLAYER 0

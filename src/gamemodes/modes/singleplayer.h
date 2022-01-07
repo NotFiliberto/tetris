@@ -62,7 +62,7 @@ void printGameThings(Tetris *tetris, WINDOW *win)
     printwc(win, COLOR_WHITE, COLOR_MAGENTA, 0, "Score: %d\n\n", tetris->score);
 
     if (totalAvailability(tetris) > 0)
-        printTetraminiAvailability(tetris); // check avaibility
+        printTetraminiAvailability(tetris, 2); // check avaibility
     else
     {
         printwc(win, COLOR_WHITE, COLOR_RED, 0,"\nno avaible pieces");
@@ -75,8 +75,8 @@ void printGameThings(Tetris *tetris, WINDOW *win)
     }
 
     printw("\n\n");
-    printMatrixW(&tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY, SHOW_WALLS, 1);
-    printMatrixW(tetris->matrix, 0, 0, 0, SHOW_WALLS, 0);
+    printMatrixW(win, &tetris->tetramino->matrix, tetris->lastX, tetris->tetramino->offsetX, tetris->tetramino->offsetY, SHOW_WALLS, 1);
+    printMatrixW(win, tetris->matrix, 0, 0, 0, SHOW_WALLS, 0);
     printw("\n\n");
 }
 

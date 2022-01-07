@@ -1,8 +1,10 @@
-void printGameThingsMultiplayer(Tetris *tetris[], int n, WINDOW *win);
+void printGameThingsMultiplayer(Tetris *tetris[], int n, int playerTurn, WINDOW *win);
 
 int multiplayer(WINDOW* win)
 {
     char key;
+    int players = 2;
+    int playerTurn = 0;
 
     Tetris *tetris[2];
     tetris[0] = createTetris(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -14,17 +16,13 @@ int multiplayer(WINDOW* win)
     int* availableTetramini = (int *)malloc(sizeof(int) * 7);
     for (int i = 0; i < 7; i++)
     {
-        availableTetramini[i] = DEFAULT_AVAILABILITY*2;
+        availableTetramini[i] = DEFAULT_AVAILABILITY*players;
     }
 
     tetris[0]->availableTetramini = availableTetramini;
     tetris[1]->availableTetramini = availableTetramini;
 
-
-    
-    tetris[0]->matrix->map[0] = 1;
-    tetris[1]->matrix->map[17] = 1;
-    printGameThingsMultiplayer(tetris, 2, win);
+    printGameThingsMultiplayer(tetris, players, playerTurn, win);
 
     while (1 && key != ESC)
     {
@@ -38,9 +36,10 @@ int multiplayer(WINDOW* win)
     return 0;
 }
 
-void printGameThingsMultiplayer(Tetris *tetris[], int n, WINDOW *win)
+void printGameThingsMultiplayer(Tetris *tetris[], int n, int playerTurn, WINDOW *win)
 {
-
+    clear();
     //printMatrixW(tetris[1]->matrix, 0, 0, 0, SHOW_WALLS, 0);
-    printGameStats(tetris, n, win);
+    printGameStats(tetris, n, playerTurn, win);
+    printTetris(tetris, n, playerTurn, win);
 }
