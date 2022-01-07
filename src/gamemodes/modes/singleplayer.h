@@ -6,10 +6,9 @@ void rotateTetraminoTask(Tetris *tetris, WINDOW *win);
 
 void testing(Tetris *tetris, WINDOW *win);
 
-int singlePlayer(void)
+int singlePlayer(WINDOW* win)
 {
     char key;
-    WINDOW *win = initScreen(); // screen, ecc...
 
     Tetris *tetris = createTetris(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     printGameThings(tetris, win);
@@ -54,26 +53,25 @@ int singlePlayer(void)
     }
 
     deleteTetris(tetris);
-    endScreen();
     return 0;
 }
 
 void printGameThings(Tetris *tetris, WINDOW *win)
 {
     clear();
-    printwc(win, COLOR_WHITE, COLOR_MAGENTA, "Score: %d\n\n", tetris->score);
+    printwc(win, COLOR_WHITE, COLOR_MAGENTA, 0, "Score: %d\n\n", tetris->score);
 
     if (totalAvailability(tetris) > 0)
         printTetraminiAvailability(tetris); // check avaibility
     else
     {
-        printwc(win, COLOR_WHITE, COLOR_RED, "\nno avaible pieces");
+        printwc(win, COLOR_WHITE, COLOR_RED, 0,"\nno avaible pieces");
     }
 
     // check game status
     if (tetris->gameStatus == 1)
     {
-        printwc(win, COLOR_WHITE, COLOR_RED, "\nGAME ENDED");
+        printwc(win, COLOR_WHITE, COLOR_RED, 0,"\nGAME ENDED");
     }
 
     printw("\n\n");

@@ -1,4 +1,4 @@
-WINDOW* initScreen()
+WINDOW *initScreen()
 {
     WINDOW *win;
 
@@ -82,28 +82,70 @@ void printMatrixW(Matrix *matrix, int rspace, int offsetX, int offsetY, int prin
         }
     }
 
-    //prevent moving matrix to the bottom while switching/rotating the tetramino
-    if(tetramino){
-        //printw("offsetX: %d, offsetY: %d\n", offsetX, offsetY);
-        for(int i=0; i<offsetY; i++){
+    // prevent moving matrix to the bottom while switching/rotating the tetramino
+    if (tetramino)
+    {
+        // printw("offsetX: %d, offsetY: %d\n", offsetX, offsetY);
+        for (int i = 0; i < offsetY; i++)
+        {
             NEW_LINE
         }
-        if(matrix->rows == 3) NEW_LINE //add line for every piece exept I
+        if (matrix->rows == 3)
+            NEW_LINE // add line for every piece exept I
     }
 }
 
-//printc with colors
-void printwc(WINDOW* win, int textColor, int textBackground, char* text, ...)
+// printc with colors
+void printwc(WINDOW *win, int textColor, int textBackground, int pairCodeModifier, char *text, ...)
 {
-    int pairnumber = textColor + textBackground; //problem with ncurses it saves this number in init_pair so i have to chage it with different colors combinations
+
+    int pairnumber = textColor + textBackground + pairCodeModifier; // problem with ncurses it saves this number in init_pair so i have to chage it with different colors combinations
     init_pair(pairnumber, textColor, textBackground);
     attron(COLOR_PAIR(pairnumber));
 
-    va_list args;
+    va_list args; // ... params
 
     va_start(args, text);
     vwprintw(win, text, args);
     va_end(args);
 
     attroff(COLOR_PAIR(pairnumber));
+}
+
+// new printing functions ===================
+
+void printGameStats(Tetris* tetris[2], int n, WINDOW *win)
+{
+    // score
+    for (int i = 0; i < n; i++)
+    {
+        printwc(win, playerColors[i].textColor, playerColors[i].backgroudColor, i, "Score player [%d]: %d", i, tetris[i]->score);
+        printw("\t"); //black space
+    }
+
+    NEW_LINE
+
+    for (int i = 0; i < n; i++)
+    {
+        // check game status
+        if (tetris[i]->gameStatus == 1)
+        {
+            printwc(win, playerColors[i].textColor, playerColors[i].backgroudColor, 0, "\nGAME ENDED");
+        }
+    }
+
+    NEW_LINE
+    NEW_LINE
+
+    printTetraminiAvailability(tetris[0]); // 0 or 1 is the same cuz they have the same pull
+}
+
+void printTetris(Tetris *tetris[], int n, WINDOW *win)
+{
+    for (int i = 0; i < n; i++)
+    {
+
+        // printGameStats(tetris, n, win);
+        // printTetrisMap(tetris->matrix);
+    }
 }

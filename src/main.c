@@ -43,10 +43,10 @@ int main(void)
                 switch (gamemode)
                 {
                 case SINGLE_PLAYER:
-                    singlePlayer();
+                    singlePlayer(win);
                     break;
                 case MULTI_PLAYER: 
-                    multiplayer();
+                    multiplayer(win);
                     break;
                 }
             }
@@ -62,7 +62,7 @@ int main(void)
 
 void printMenu(WINDOW* win, int gamemode){
 
-    printwc(win, COLOR_WHITE, COLOR_BLUE, "SELECT GAMEMODE\n\n", gamemode);
+    printwc(win, COLOR_WHITE, COLOR_BLUE, 0, "SELECT GAMEMODE\n\n", gamemode);
 
     char* gamemodes[] = {"Single Player", "Multi Player", "VS CPU"};
 
