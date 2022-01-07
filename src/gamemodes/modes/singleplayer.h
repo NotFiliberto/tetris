@@ -71,7 +71,7 @@ void printGameThings(Tetris *tetris, WINDOW *win)
     // check game status
     if (tetris->gameStatus == 1)
     {
-        printwc(win, COLOR_WHITE, COLOR_RED, 0,"\nGAME ENDED");
+        printwc(win, COLOR_WHITE, COLOR_RED, 0,"\nGAME OVER");
     }
 
     printw("\n\n");
