@@ -239,13 +239,13 @@ int decrementTetraminoAvailability(Tetris *tetris, int tetraminoCode)
     return -1;
 }
 
-void printTetraminiAvailability(Tetris *tetris)
+void printTetraminiAvailability(Tetris *tetris, int typesPerRow)
 {
     init_pair(1, COLOR_WHITE, COLOR_CYAN);
     // printw("[Current Type %c] > %d\n\n", typeToLetter(tetris->tetramino->code), tetris->availableTetramini[tetris->tetramino->code]);
     for (int i = 0; i < 7; i++)
     {
-        if (i > 1 && i % 2 == 0)
+        if (i > 1 && i % (typesPerRow) == 0)
             printw("\n");
         if (i == tetris->tetramino->code)
         {
