@@ -42,7 +42,7 @@ int main(void)
                     singlePlayer(game);
                     break;
                 case MULTI_PLAYER: 
-                    //multiplayer(game);
+                    multiplayer(game);
                     break;
                 }
                 game->key = ' '; //otherwhise it exit because the key is ESC

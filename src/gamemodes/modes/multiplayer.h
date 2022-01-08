@@ -1,62 +1,57 @@
 Tetris **initGame(int numberOfPlayers);
-void printGameThingsMultiplayer(Tetris **tetris, int numberOfPlayers, int playerTurn, WINDOW *win);
+void printGameThingsMultiplayer(Game *game);
 
-void switchTetraminoTaskM(Tetris** tetris, WINDOW *win, int incrementType);
-void insertTetraminoTaskM(Tetris** tetris, WINDOW *win);
-void moveTetraminoTaskM(Tetris** tetris, WINDOW *win, char key);
-void rotateTetraminoTaskM(Tetris** tetris, WINDOW *win);
+void switchTetraminoTaskM(Game *game, int incrementType);
+void insertTetraminoTaskM(Game *game);
+void moveTetraminoTaskM(Game *game);
+void rotateTetraminoTaskM(Game *game);
 
-int multiplayer(WINDOW *win)
+int multiplayer(Game *game)
 {
-    char key;
-    int numberOfPlayers = 1;
-    int playerTurn = 0;
 
-    Tetris **tetris = initGame(numberOfPlayers); // array of tetris games
-    printGameThingsMultiplayer(tetris, numberOfPlayers, playerTurn, win);
+    game->numberOfPlayers = 2;
+    game->tetris = initGame(game->numberOfPlayers); // init with same pieces pull and create multiple Tetris obj
+    printGameThingsMultiplayer(game);
 
-    while (1 && key != ESC)
+    while (1 && game->key != ESC)
     {
-        key = toupper(getch());
-        if (key > -1)
+        game->key = toupper(getch());
+        if (game->key > -1)
         { // default is -1 if u dont press anything
-            if (key == ESC && getch() == '[')
-                key = getch(); // prevent exit if user press ARROW KEYS becuase when it happen getch will push 3 values into the buffer (ESC + [ + ARROW_KEY)
-            // printw("%c", toupper(key));
+            if (game->key == ESC && getch() == '[')
+                game->key = getch(); // prevent exit if user press ARROW KEYS becuase when it happen getch will push 3 values into the buffer (ESC + [ + ARROW_KEY)
+            // printw("%c", toupper(game->key));
 
-            /*             switch (key)
-                        {
-                        case SWITCH:
-                            switchTetraminoTaskM(tetris, win, 1);
-                            break;
-                        case SELECT:
-                            insertTetraminoTaskM(tetris, win);
-                            break;
+            switch (game->key)
+            {
+            case SWITCH:
+                switchTetraminoTaskM(game, 1);
+                break;
+            case SELECT:
+                insertTetraminoTaskM(game);
+                break;
 
-                        case MOVE_LEFT: // left
-                            moveTetraminoTaskM(tetris, win, key);
-                            break;
+            case MOVE_LEFT: // left
+                moveTetraminoTaskM(game);
+                break;
 
-                        case MOVE_RIGHT: // right
-                            moveTetraminoTaskM(tetris, win, key);
-                            break;
-                        case MOVE_UP:
-                            rotateTetraminoTaskM(tetris, win);
-                            break;
-                        case '-': // for testing stuffs
-                            testing(tetris, win);
-                            break;
+            case MOVE_RIGHT: // right
+                moveTetraminoTaskM(game);
+                break;
+            case MOVE_UP:
+                rotateTetraminoTaskM(game);
+                break;
 
-                        default:
-                            break;
-                        } */
+            default:
+                break;
+            }
         }
         refresh();
     }
 
-    for (int i = 0; i < numberOfPlayers; i++)
+    for (int i = 0; i < game->numberOfPlayers; i++)
     {
-        deleteTetris(tetris[i]);
+        deleteTetris(game->tetris[i]);
     }
 
     return 0;
@@ -84,92 +79,112 @@ Tetris **initGame(int numberOfPlayers)
     return tetris;
 }
 
-void printGameThingsMultiplayer(Tetris **tetris, int numberOfPlayers, int playerTurn, WINDOW *win)
+void printGameThingsMultiplayer(Game *game)
 {
     clear();
-    printGameStats(tetris, numberOfPlayers, playerTurn, win);
+    printGameStats(game->tetris, game->numberOfPlayers, game->playerTurn, game->win);
 
     printw("\n\n---> Player Turn: ");
-    printwc(win, playerColors[playerTurn].textColor, playerColors[playerTurn].backgroudColor, 0, "%d\n\n", playerTurn);
+    printwc(game->win, playerColors[game->playerTurn].textColor, playerColors[game->playerTurn].backgroudColor, game->playerTurn, "%d\n\n", game->playerTurn);
 
-    printTetris(tetris, numberOfPlayers, playerTurn, win);
+    printTetris(game->tetris, game->numberOfPlayers, game->playerTurn, game->win);
 }
 
-void switchTetraminoTaskM(Tetris **tetris, WINDOW *win, int incrementType)
+int nextPlayerTurn(Game *game)
 {
-    if (!tetris->gameStatus)
+    int turn = game->playerTurn;
+    return (game->playerTurn + 1) % game->numberOfPlayers;
+}
+
+int gameStatus(Game *game)
+{
+    int gameStatus = 0; // not finished
+
+    if (totalAvailability(game->tetris[0]) <= 0)
+        gameStatus = 1;
+
+    for (int i = 0; i < game->numberOfPlayers; i++)
     {
-        if (totalAvailability(tetris) > 0 && !tetris->gameStatus)
+        if (game->tetris[i]->gameStatus == 1)
+            gameStatus = 1;
+    }
+    return gameStatus;
+}
+
+void switchTetraminoTaskM(Game *game, int incrementType)
+{
+    if (!gameStatus(game))
+    {
+        if (totalAvailability(game->tetris[game->playerTurn]) > 0 && !gameStatus(game))
         {
-            int currentTetraminoType = tetris->tetramino->code;
+            int currentTetraminoType = game->tetris[game->playerTurn]->tetramino->code;
 
-            if (incrementType)                                             // only in main game loop
-                tetris->tetraminoType = (tetris->tetramino->code + 1) % 7; // next tetramino
-            tetris->tetraminoType = nextTetraminoAvailable(tetris);        // if avaible return the incremente tetramino in the line before otherwhise it finds automatically the ones avalaible
+            if (incrementType)                                                                                             // only in main game loop
+                game->tetris[game->playerTurn]->tetraminoType = (game->tetris[game->playerTurn]->tetramino->code + 1) % 7; // next tetramino
 
-            if (currentTetraminoType != (tetris->tetraminoType))
-            {                                                                           // to save current rotation
-                deleteTetramino(tetris->tetramino);                                     // delete old tetramino and all his stuffs
-                tetris->tetramino = createTetramino(&tetramini[tetris->tetraminoType]); // create new tetramino
+            for (int i = 0; i < game->numberOfPlayers; i++)
+            {
+                game->tetris[i]->tetraminoType = nextTetraminoAvailable(game->tetris[i]); // if avaible return the incremente tetramino in the line before otherwhise it finds automatically the ones avalaible
+
+                if (currentTetraminoType != (game->tetris[i]->tetraminoType))
+                {                                                                                             // to save current rotation
+                    deleteTetramino(game->tetris[i]->tetramino);                                              // delete old tetramino and all his stuffs
+                    game->tetris[i]->tetramino = createTetramino(&tetramini[game->tetris[i]->tetraminoType]); // create new tetramino
+                }
+
+                game->tetris[i]->lastX = tetraminoXMoving(game->tetris[i]->tetramino, game->tetris[i]->lastX, SWITCH); // check x pos for the visualization
             }
-
-            tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, SWITCH); // check x pos for the visualization
         }
-        if (incrementType) // print things only if this taskM is called in the main loop
-            printGameThings(tetris, win);
+        if (incrementType) // print things only if this task is called in the main loop
+            printGameThingsMultiplayer(game);
     }
 }
 
-void insertTetraminoTaskM(Tetris **tetris, WINDOW *win)
+void insertTetraminoTaskM(Game *game)
 {
-    if (!tetris->gameStatus)
+    if (!gameStatus(game))
     {
         int points = 0;
-        if (tetraminoAvailability(tetris, tetris->tetramino->code) > 0)
+        if (tetraminoAvailability(game->tetris[game->playerTurn], game->tetris[game->playerTurn]->tetramino->code) > 0)
         {
-            if (insertTetramino(tetris->matrix, tetris->tetramino, tetris->lastX, 0, GRAVITY, 1))
+            if (insertTetramino(game->tetris[game->playerTurn]->matrix, game->tetris[game->playerTurn]->tetramino, game->tetris[game->playerTurn]->lastX, 0, GRAVITY, 1))
             {
-                decrementTetraminoAvailability(tetris, tetris->tetramino->code);
+                decrementTetraminoAvailability(game->tetris[game->playerTurn], game->tetris[game->playerTurn]->tetramino->code);
 
-                points = scorePoints(tetris);
+                points = scorePoints(game->tetris[game->playerTurn]);
 
                 if (points)
                 {
-                    tetris->score += points;
+                    game->tetris[game->playerTurn]->score += points;
                 }
-                tetris->gameStatus = gameEnded(tetris);
+                game->tetris[game->playerTurn]->gameStatus = gameEnded(game->tetris[game->playerTurn]);
 
-                if (!tetris->gameStatus)                 // swap piece automaticly if needed
-                    switchTetraminoTaskM(tetris, win, 0); // check next piece avaible
+                if (!game->tetris[game->playerTurn]->gameStatus) // swap piece automaticly if needed
+                    switchTetraminoTaskM(game, 0);               // check next piece avaible
+                game->playerTurn = nextPlayerTurn(game);
             }
         }
-        printGameThings(tetris, win);
+        printGameThingsMultiplayer(game);
     }
 }
 
-void moveTetraminoTaskM(Tetris **tetris, WINDOW *win, char key)
+void moveTetraminoTaskM(Game *game)
 {
-    if (!tetris->gameStatus)
+    if (!gameStatus(game))
     {
-        tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, key);
-        printGameThings(tetris, win);
+        game->tetris[game->playerTurn]->lastX = tetraminoXMoving(game->tetris[game->playerTurn]->tetramino, game->tetris[game->playerTurn]->lastX, game->key);
+        printGameThingsMultiplayer(game);
     }
 }
 
-void rotateTetraminoTaskM(Tetris **tetris, WINDOW *win)
+void rotateTetraminoTaskM(Game *game)
 {
-    if (!tetris->gameStatus)
+    if (!gameStatus(game))
     {
 
-        tetris->tetramino = rotateTetramino(tetris->tetramino);
-        tetris->lastX = tetraminoXMoving(tetris->tetramino, tetris->lastX, SWITCH); // fix the position
+        game->tetris[game->playerTurn]->tetramino = rotateTetramino(game->tetris[game->playerTurn]->tetramino);
+        game->tetris[game->playerTurn]->lastX = tetraminoXMoving(game->tetris[game->playerTurn]->tetramino, game->tetris[game->playerTurn]->lastX, SWITCH); // fix the position
 
-        printGameThings(tetris, win);
+        printGameThingsMultiplayer(game);
     }
-}
-
-void testing(Tetris *tetris, WINDOW *win)
-{
-    printGameThings(tetris, win);
-    printw("--> testing");
 }

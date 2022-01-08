@@ -8,6 +8,7 @@ void testing(Game* game);
 
 int singlePlayer(Game* game)
 {
+    game->numberOfPlayers = 1;
     game->tetris = (Tetris **)malloc(sizeof(Tetris *) * 1);
     game->tetris[0] = createTetris(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     printGameThings(game);
