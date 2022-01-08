@@ -1,35 +1,31 @@
 #include "gamemodes/gamemodes.h"
 
-void printMenu(WINDOW* win, int gamemode);
+void printMenu(Game* game);
 
 int main(void)
 {
-
-    char key;
-    int gamemode = 0;
+    Game* game = createGame();
     int gamemodeSelected = 0;
-
-    WINDOW *win = initScreen();
 
     do
     {
         clear();
-        printMenu(win, gamemode);
+        printMenu(game);
 
-        key = toupper(getch());
-        if (key > -1)
+        game->key = toupper(getch());
+        if (game->key > -1)
         { // default is -1 if u dont press anything
-            if (key == ESC && getch() == '[')
-                key = getch(); 
+            if (game->key == ESC && getch() == '[')
+                game->key = getch(); 
 
-            switch (key)
+            switch (game->key)
             {
             case MOVE_UP:
-                gamemode = Mod((gamemode - 1), 3);
+                game->gamemode = Mod((game->gamemode - 1), 3);
                 break;
 
             case MOVE_DOWN: // left
-                gamemode = Mod((gamemode + 1), 3);
+                game->gamemode = Mod((game->gamemode + 1), 3);
                 break;
 
             case SELECT:
@@ -40,13 +36,17 @@ int main(void)
             // start game if selected
             if (gamemodeSelected)
             {
-                switch (gamemode)
+
+                int gamemodes[] = {1, 2, 2}; //only for malloc
+                game->tetris = (Tetris **)malloc(sizeof(Tetris *) * gamemodes[game->gamemode]);
+
+                switch (game->gamemode)
                 {
                 case SINGLE_PLAYER:
-                    singlePlayer(win);
+                    singlePlayer(game);
                     break;
                 case MULTI_PLAYER: 
-                    multiplayer(win);
+                    //multiplayer(game);
                     break;
                 }
             }
@@ -54,24 +54,24 @@ int main(void)
         }
         refresh();
 
-    } while (key != ESC && gamemode != -1);
+    } while (game->key != ESC && game->gamemode != -1);
 
     endScreen();
     return 0;
 }
 
-void printMenu(WINDOW* win, int gamemode){
+void printMenu(Game* game){
 
-    printwc(win, COLOR_WHITE, COLOR_BLUE, 0, "SELECT GAMEMODE\n\n", gamemode);
+    printwc(game->win, COLOR_WHITE, COLOR_BLUE, 0, "SELECT GAMEMODE\n\n", game->gamemode);
 
     char* gamemodes[] = {"Single Player", "Multi Player", "VS CPU"};
 
     for(int i=0; i<3; i++){
-        if(i==gamemode) printw("[ ");
+        if(i==game->gamemode) printw("[ ");
 
         printw("%s", gamemodes[i]);
 
-        if(i==gamemode) printw(" ]");
+        if(i==game->gamemode) printw(" ]");
 
         NEW_LINE
     }

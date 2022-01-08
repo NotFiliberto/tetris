@@ -120,12 +120,12 @@ void printwc(WINDOW *win, int textColor, int textBackground, int pairCodeModifie
 
 // new printing functions ===================
 
-void printGameStats(Tetris *tetris[], int n, int playerTurn, WINDOW *win)
+void printGameStats(Tetris** tetris, int numberOfPlayers, int playerTurn, WINDOW *win)
 {
 
     int yScreenStart = getcury(win);
     // score
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < numberOfPlayers; i++)
     {
         wmove(win, yScreenStart, SPACE_BETWEEH_GAMES * i);
         printwc(win, playerColors[i].textColor, playerColors[i].backgroudColor, i, "Score player [%d]: %d", i, tetris[i]->score);
@@ -133,13 +133,13 @@ void printGameStats(Tetris *tetris[], int n, int playerTurn, WINDOW *win)
     
     NEW_LINE
 
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < numberOfPlayers; i++)
     {
         // check game status
         if (tetris[i]->gameStatus == 1)
         {
             char endGameStr[] = "The game is over!";
-            wmove(win, getcury(win)+1, ((SPACE_BETWEEH_GAMES * (n-1)) + DEFAULT_WIDTH)/2 - (strlen(endGameStr)/2));
+            wmove(win, getcury(win)+1, ((SPACE_BETWEEH_GAMES * (numberOfPlayers-1)) + DEFAULT_WIDTH)/2 - (strlen(endGameStr)/2));
             printwc(win, COLOR_WHITE, COLOR_RED, 0, endGameStr);
         }
     }
@@ -150,12 +150,12 @@ void printGameStats(Tetris *tetris[], int n, int playerTurn, WINDOW *win)
     printTetraminiAvailability(tetris[playerTurn], 7); // the availability and piece selected change based on the player turn
 }
 
-void printTetris(Tetris *tetris[], int n, int playerTurn, WINDOW *win)
+void printTetris(Tetris** tetris, int numberOfPlayers, int playerTurn, WINDOW *win)
 {
     printw("\n\n");
 
     int yScreenStart = getcury(win);
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < numberOfPlayers; i++)
     {
         wmove(win, yScreenStart, SPACE_BETWEEH_GAMES * i);
 

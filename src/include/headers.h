@@ -11,3 +11,4 @@
 #include "mylibs/tetramini.h"
 #include "mylibs/tetris.h"
 #include "mylibs/gamescreen.h"
+#include "mylibs/game.h"
