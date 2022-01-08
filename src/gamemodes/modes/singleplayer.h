@@ -1,28 +1,27 @@
 void printGameThings(Game* game);
 void switchTetraminoTask(Game* game, int incrementType);
 void insertTetraminoTask(Game* game);
-void moveTetraminoTask(Game* game, char key);
+void moveTetraminoTask(Game* game);
 void rotateTetraminoTask(Game* game);
 
 void testing(Game* game);
 
 int singlePlayer(Game* game)
 {
-    char key;
-
+    game->tetris = (Tetris **)malloc(sizeof(Tetris *) * 1);
     game->tetris[0] = createTetris(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     printGameThings(game);
 
-    while (1 && key != ESC)
+    while (1 && game->key != ESC)
     {
-        key = toupper(getch());
-        if (key > -1)
+        game->key = toupper(getch());
+        if (game->key > -1)
         { // default is -1 if u dont press anything
-            if (key == ESC && getch() == '[')
-                key = getch(); // prevent exit if user press ARROW KEYS becuase when it happen getch will push 3 values into the buffer (ESC + [ + ARROW_KEY)
-            // printw("%c", toupper(key));
+            if (game->key == ESC && getch() == '[')
+                game->key = getch(); // prevent exit if user press ARROW KEYS becuase when it happen getch will push 3 values into the buffer (ESC + [ + ARROW_KEY)
+            // printw("%c", toupper(game->key));
 
-            switch (key)
+            switch (game->key)
             {
             case SWITCH:
                 switchTetraminoTask(game, 1);
@@ -32,11 +31,11 @@ int singlePlayer(Game* game)
                 break;
 
             case MOVE_LEFT: // left
-                moveTetraminoTask(game, key);
+                moveTetraminoTask(game);
                 break;
 
             case MOVE_RIGHT: // right
-                moveTetraminoTask(game, key);
+                moveTetraminoTask(game);
                 break;
             case MOVE_UP:
                 rotateTetraminoTask(game);
@@ -132,11 +131,11 @@ void insertTetraminoTask(Game* game)
     }
 }
 
-void moveTetraminoTask(Game* game, char key)
+void moveTetraminoTask(Game* game)
 {
     if (!game->tetris[0]->gameStatus)
     {
-        game->tetris[0]->lastX = tetraminoXMoving(game->tetris[0]->tetramino, game->tetris[0]->lastX, key);
+        game->tetris[0]->lastX = tetraminoXMoving(game->tetris[0]->tetramino, game->tetris[0]->lastX, game->key);
         printGameThings(game);
     }
 }

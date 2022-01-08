@@ -36,10 +36,6 @@ int main(void)
             // start game if selected
             if (gamemodeSelected)
             {
-
-                int gamemodes[] = {1, 2, 2}; //only for malloc
-                game->tetris = (Tetris **)malloc(sizeof(Tetris *) * gamemodes[game->gamemode]);
-
                 switch (game->gamemode)
                 {
                 case SINGLE_PLAYER:
@@ -49,6 +45,7 @@ int main(void)
                     //multiplayer(game);
                     break;
                 }
+                game->key = ' '; //otherwhise it exit because the key is ESC
             }
             gamemodeSelected = 0; //reset because if player return back to menu after a game
         }
