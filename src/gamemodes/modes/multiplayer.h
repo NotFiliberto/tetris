@@ -156,6 +156,11 @@ void insertTetraminoTaskM(Game *game)
                 if (points)
                 {
                     game->tetris[game->playerTurn]->score += points;
+                    for(int i=0; i<game->numberOfPlayers; i++){
+                        if(i != game->playerTurn){
+                            invertTetrisRows(game->tetris[i], points/6); //invert 1 or 2 rows if the current player score more than 6 points
+                        }
+                    }
                 }
                 game->tetris[game->playerTurn]->gameStatus = gameEnded(game->tetris[game->playerTurn]);
 

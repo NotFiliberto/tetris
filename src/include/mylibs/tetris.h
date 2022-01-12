@@ -397,3 +397,18 @@ int scorePoints(Tetris *tetris)
 
     return points;
 }
+
+void invertRow(int* row, int width){
+    for(int i=0; i<width; i++){
+        if(row[i] == 0)
+            row[i] = 1;
+        else
+            row[i] = 0;
+    }
+}
+
+void invertTetrisRows(Tetris* tetris, int nrowsToInvert){
+    for(int i = 0;  i < nrowsToInvert; i++){
+        invertRow(&tetris->matrix->map[tetris->matrix->cols*(tetris->matrix->rows-i-1)], tetris->matrix->cols);
+    }
+}

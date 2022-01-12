@@ -2,7 +2,7 @@
 #define DEFAULT_WIDTH 10
 #define ESC 27
 #define GRAVITY 1 //ENABLED by default
-#define DEFAULT_AVAILABILITY 1
+#define DEFAULT_AVAILABILITY 10
 #define SHOW_WALLS 1
 
 //controls

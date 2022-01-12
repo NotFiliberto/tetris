@@ -155,6 +155,7 @@ void rotateTetraminoTask(Game* game)
 
 void testing(Game* game)
 {
+    invertTetrisRows(game->tetris[0], 3);
     printGameThings(game);
     printw("--> testing");
 }
