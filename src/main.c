@@ -4,8 +4,9 @@ void printMenu(Game* game);
 
 int main(void)
 {
+    srand(time(NULL));
     Game* game = createGame();
-    int gamemodeSelected = 0;
+    int gamemodeSelectedFlag = 0;
 
     do
     {
@@ -29,12 +30,12 @@ int main(void)
                 break;
 
             case SELECT:
-                gamemodeSelected = 1;
+                gamemodeSelectedFlag = 1;
                 break;
             }
 
             // start game if selected
-            if (gamemodeSelected)
+            if (gamemodeSelectedFlag)
             {
                 switch (game->gamemode)
                 {
@@ -44,10 +45,13 @@ int main(void)
                 case MULTI_PLAYER: 
                     multiplayer(game);
                     break;
+                case VS_CPU:
+                    multiplayer(game);
+                    break;
                 }
                 game->key = ' '; //otherwhise it exit because the key is ESC
             }
-            gamemodeSelected = 0; //reset because if player return back to menu after a game
+            gamemodeSelectedFlag = 0; //reset because if player return back to menu after a game
         }
         refresh();
 
