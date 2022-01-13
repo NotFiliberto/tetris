@@ -2,7 +2,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include <curses.h> // to implement cross platform non blocking terminal keyboard input
+#include <curses.h> /* to implement cross platform non blocking terminal keyboard input */
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <string.h>

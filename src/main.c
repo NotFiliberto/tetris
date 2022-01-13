@@ -1,11 +1,11 @@
 #include "gamemodes/gamemodes.h"
 
-void printMenu(Game* game);
+void printMenu(Game *game);
 
 int main(void)
 {
     srand(time(NULL));
-    Game* game = createGame();
+    Game *game = createGame();
     int gamemodeSelectedFlag = 0;
 
     do
@@ -15,9 +15,10 @@ int main(void)
 
         game->key = toupper(getch());
         if (game->key > -1)
-        { // default is -1 if u dont press anything
+        {
+            /* default is -1 if u dont press anything*/
             if (game->key == ESC && getch() == '[')
-                game->key = getch(); 
+                game->key = getch();
 
             switch (game->key)
             {
@@ -25,7 +26,7 @@ int main(void)
                 game->gamemode = Mod((game->gamemode - 1), 3);
                 break;
 
-            case MOVE_DOWN: // left
+            case MOVE_DOWN: /* left */
                 game->gamemode = Mod((game->gamemode + 1), 3);
                 break;
 
@@ -34,7 +35,7 @@ int main(void)
                 break;
             }
 
-            // start game if selected
+            /* start game if selected */
             if (gamemodeSelectedFlag)
             {
                 switch (game->gamemode)
@@ -42,17 +43,17 @@ int main(void)
                 case SINGLE_PLAYER:
                     multiplayer(game);
                     break;
-                case MULTI_PLAYER: 
+                case MULTI_PLAYER:
                     multiplayer(game);
                     break;
                 case VS_CPU:
-                    game->playerTurn = 0; //default start with human
+                    game->playerTurn = 0; /* default start with human */
                     multiplayer(game);
                     break;
                 }
-                game->key = ' '; //otherwhise it exit because the key is ESC
+                game->key = ' '; /* otherwhise it exit because the key is ESC */
             }
-            gamemodeSelectedFlag = 0; //reset because if player return back to menu after a game
+            gamemodeSelectedFlag = 0; /* reset because if player return back to menu after a game */
         }
         refresh();
 
@@ -62,19 +63,23 @@ int main(void)
     return 0;
 }
 
-void printMenu(Game* game){
+void printMenu(Game *game)
+{
 
     printwc(game->win, COLOR_WHITE, COLOR_BLUE, 0, "SELECT GAMEMODE\n\n", game->gamemode);
 
-    char* gamemodes[] = {"Single Player", "Multi Player", "VS CPU"};
+    char *gamemodes[] = {"Single Player", "Multi Player", "VS CPU"};
 
     int i;
-    for(i=0; i<3; i++){
-        if(i==game->gamemode) printw("[ ");
+    for (i = 0; i < 3; i++)
+    {
+        if (i == game->gamemode)
+            printw("[ ");
 
         printw("%s", gamemodes[i]);
 
-        if(i==game->gamemode) printw(" ]");
+        if (i == game->gamemode)
+            printw(" ]");
 
         NEW_LINE
     }

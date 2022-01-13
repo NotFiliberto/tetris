@@ -2,8 +2,8 @@ WINDOW *initScreen()
 {
     WINDOW *win;
 
-    // initialization
-    win = initscr(); // new screen will be created
+    /* initialization  */
+    win = initscr(); /* new screen will be created */
     nodelay(win, TRUE);
     noecho();
 
@@ -38,11 +38,11 @@ int tetraminoXMoving(Tetramino *t, int x, char input)
 void printMatrixW(WINDOW *win, Matrix *matrix, int lastXPos, int offsetX, int offsetY, int printWalls, int tetramino)
 {
     int row = 0, col = 0, i = 0;
-    int xScreenStart = getcurx(win), yScreenStart = getcury(win); // coord cursor of window screen
+    int xScreenStart = getcurx(win), yScreenStart = getcury(win); /* coord cursor of window screen */
     for (row = offsetY; row < matrix->rows; row++)
     {
         for (i = 0; i < lastXPos; i++)
-            printw(EMPTY_SPACE); // space for better visualization
+            printw(EMPTY_SPACE); /* space for better visualization */
 
         if (printWalls && !tetramino)
         {
@@ -51,7 +51,7 @@ void printMatrixW(WINDOW *win, Matrix *matrix, int lastXPos, int offsetX, int of
         }
         else
 
-            printw(EMPTY_SPACE); // ad left space for correct visualization of the waall
+            printw(EMPTY_SPACE); /* ad left space for correct visualization of the waall */
 
         for (col = offsetX; col < matrix->cols; col++)
         {
@@ -63,54 +63,55 @@ void printMatrixW(WINDOW *win, Matrix *matrix, int lastXPos, int offsetX, int of
 
         if (printWalls && !tetramino)
         {
-            // if(row==0) printw("-> col: %d", col);
+            /* if(row==0) printw("-> col: %d", col); */
             if ((col + row * matrix->cols) % matrix->cols == 0)
                 printw(WALL);
         }
 
-        // NEW_LINE
+        /* NEW_LINE */
         wmove(win, getcury(win) + 1,xScreenStart);
     }
 
     if (printWalls && !tetramino)
     {
         for (i = 0; i < lastXPos; i++)
-            printw(EMPTY_SPACE); // space for better visualization
+            printw(EMPTY_SPACE); /* space for better visualization */
 
         int j = 0;
-        for (j = 0; j < matrix->cols + 2; j++) // left and right walls
+        for (j = 0; j < matrix->cols + 2; j++) /* left and right walls */
         {
             printw(WALL);
         }
     }
 
-    // prevent moving matrix to the bottom while switching/rotating the tetramino
+    /* prevent moving matrix to the bottom while switching/rotating the tetramino */
     if (tetramino)
     {
-        // printw("offsetX: %d, offsetY: %d\n", offsetX, offsetY);
+        /* printw("offsetX: %d, offsetY: %d\n", offsetX, offsetY); */
         int i=0;
         for ( i = 0; i < offsetY; i++)
         {
-            // NEW_LINE
+            /* NEW_LINE */
             wmove(win, getcury(win) + 1,xScreenStart);
         }
         if (matrix->rows == 3)
         {
-            // NEW_LINE // add line for every piece exept I
+            /* NEW_LINE  */
+            /* add line for every piece exept I */
             wmove(win, getcury(win) + 1,xScreenStart);
         }
     }
 }
 
-// printc with colors
+/* printc with colors */
 void printwc(WINDOW *win, int textColor, int textBackground, int pairCodeModifier, char *text, ...)
 {
 
-    int pairnumber = textColor + textBackground + pairCodeModifier; // problem with ncurses it saves this number in init_pair so i have to chage it with different colors combinations
+    int pairnumber = textColor + textBackground + pairCodeModifier; /* problem with ncurses it saves this number in init_pair so i have to chage it with different colors combinations */
     init_pair(pairnumber, textColor, textBackground);
     attron(COLOR_PAIR(pairnumber));
 
-    va_list args; // ... params
+    va_list args; /* ... params */
 
     va_start(args, text);
     vwprintw(win, text, args);
@@ -119,13 +120,13 @@ void printwc(WINDOW *win, int textColor, int textBackground, int pairCodeModifie
     attroff(COLOR_PAIR(pairnumber));
 }
 
-// new printing functions ===================
+/* new printing functions =================== */
 
 void printGameStats(Tetris** tetris, int numberOfPlayers, int playerTurn, WINDOW *win)
 {
 
     int yScreenStart = getcury(win), i;
-    // score
+    /* score */
     for ( i = 0; i < numberOfPlayers; i++)
     {
         wmove(win, yScreenStart, SPACE_BETWEEH_GAMES * i);
@@ -136,14 +137,14 @@ void printGameStats(Tetris** tetris, int numberOfPlayers, int playerTurn, WINDOW
 
     for ( i = 0; i < numberOfPlayers; i++)
     {
-        // check game status
+        /* check game status */
         if (tetris[i]->gameStatus == 1)
         {
             char endGameStr[] = "The game is over!";
             wmove(win, getcury(win)+1, ((SPACE_BETWEEH_GAMES * (numberOfPlayers-1)) + DEFAULT_WIDTH)/2 - (strlen(endGameStr)/2));
             printwc(win, COLOR_WHITE, COLOR_RED, 0, endGameStr);
 
-            //print winner
+            /* print winner */
             if(numberOfPlayers > 1){
                 int w = getWinner(tetris, numberOfPlayers); 
                 char winnerStr[50] = "WINNER: player [%d]";
@@ -158,7 +159,7 @@ void printGameStats(Tetris** tetris, int numberOfPlayers, int playerTurn, WINDOW
     NEW_LINE
     NEW_LINE
 
-    printTetraminiAvailability(tetris[playerTurn], 7); // the availability and piece selected change based on the player turn
+    printTetraminiAvailability(tetris[playerTurn], 7); /* the availability and piece selected change based on the player turn */
 }
 
 void printTetris(Tetris** tetris, int numberOfPlayers, int playerTurn, WINDOW *win)

@@ -1,7 +1,7 @@
 typedef struct game{
-    char key; //input key
-    WINDOW* win; //screen
-    Tetris** tetris; //array of tetris game
+    char key; /* input key */
+    WINDOW *win;     /* screen */
+    Tetris **tetris; /* array of tetris game */
     int gamemode;
     int numberOfPlayers;
     int playerTurn;

@@ -1,11 +1,11 @@
 #define DEFAULT_HEIGHT 15
 #define DEFAULT_WIDTH 10
 #define ESC 27
-#define GRAVITY 1 //ENABLED by default
+#define GRAVITY 1 /* ENABLED by default */
 #define DEFAULT_AVAILABILITY 1
 #define SHOW_WALLS 1
 
-//controls
+/* controls */
 #define SWITCH ' '
 #define MOVE_DOWN 'S'
 #define MOVE_UP 'W'
@@ -13,22 +13,22 @@
 #define MOVE_LEFT 'A'
 #define SELECT '\n'
 
-//graphic
+/* graphic */
 #define EMPTY_SPACE " "
 #define WALL "#"
 #define PIECE "@"
 #define SPACE_BETWEEN_PLAYERS_SCREEN 25
 #define SPACE_BETWEEH_GAMES (DEFAULT_WIDTH + 2 + SPACE_BETWEEN_PLAYERS_SCREEN)
 
-//gamemodes
+/* gamemodes */
 #define SINGLE_PLAYER 0
 #define MULTI_PLAYER 1
 #define VS_CPU 2
 
-//usefull
+/* usefull */
 #define NEW_LINE printw("\n");
 
-//For colors
+/* For colors */
 typedef struct playerColor{
     int textColor;
     int backgroudColor;
