@@ -88,7 +88,8 @@ void printMatrixW(WINDOW *win, Matrix *matrix, int lastXPos, int offsetX, int of
     if (tetramino)
     {
         // printw("offsetX: %d, offsetY: %d\n", offsetX, offsetY);
-        for (int i = 0; i < offsetY; i++)
+        int i=0;
+        for ( i = 0; i < offsetY; i++)
         {
             // NEW_LINE
             wmove(win, getcury(win) + 1,xScreenStart);
@@ -123,9 +124,9 @@ void printwc(WINDOW *win, int textColor, int textBackground, int pairCodeModifie
 void printGameStats(Tetris** tetris, int numberOfPlayers, int playerTurn, WINDOW *win)
 {
 
-    int yScreenStart = getcury(win);
+    int yScreenStart = getcury(win), i;
     // score
-    for (int i = 0; i < numberOfPlayers; i++)
+    for ( i = 0; i < numberOfPlayers; i++)
     {
         wmove(win, yScreenStart, SPACE_BETWEEH_GAMES * i);
         printwc(win, playerColors[i].textColor, playerColors[i].backgroudColor, i, "Score player [%d]: %d", i, tetris[i]->score);
@@ -133,7 +134,7 @@ void printGameStats(Tetris** tetris, int numberOfPlayers, int playerTurn, WINDOW
     
     NEW_LINE
 
-    for (int i = 0; i < numberOfPlayers; i++)
+    for ( i = 0; i < numberOfPlayers; i++)
     {
         // check game status
         if (tetris[i]->gameStatus == 1)
@@ -164,8 +165,8 @@ void printTetris(Tetris** tetris, int numberOfPlayers, int playerTurn, WINDOW *w
 {
     printw("\n\n");
 
-    int yScreenStart = getcury(win);
-    for (int i = 0; i < numberOfPlayers; i++)
+    int yScreenStart = getcury(win),i;
+    for ( i = 0; i < numberOfPlayers; i++)
     {
         wmove(win, yScreenStart, SPACE_BETWEEH_GAMES * i);
 

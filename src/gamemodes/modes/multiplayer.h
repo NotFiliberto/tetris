@@ -57,7 +57,8 @@ int multiplayer(Game *game)
         refresh();
     }
 
-    for (int i = 0; i < game->numberOfPlayers; i++)
+    int i=0;
+    for ( i = 0; i < game->numberOfPlayers; i++)
     {
         deleteTetris(game->tetris[i]);
     }
@@ -106,12 +107,12 @@ int nextPlayerTurn(Game *game)
 
 int gameStatus(Game *game)
 {
-    int gameStatus = 0; // not finished
+    int gameStatus = 0, i; // not finished
 
     if (totalAvailability(game->tetris[0]) <= 0)
         gameStatus = 1;
 
-    for (int i = 0; i < game->numberOfPlayers; i++)
+    for ( i = 0; i < game->numberOfPlayers; i++)
     {
         if (game->tetris[i]->gameStatus == 1)
             gameStatus = 1;
@@ -129,8 +130,8 @@ void switchTetraminoTaskM(Game *game, int incrementType)
 
             if (incrementType)                                                                                             // only in main game loop
                 game->tetris[game->playerTurn]->tetraminoType = (game->tetris[game->playerTurn]->tetramino->code + 1) % 7; // next tetramino
-
-            for (int i = 0; i < game->numberOfPlayers; i++)
+            int i=0;
+            for ( i = 0; i < game->numberOfPlayers; i++)
             {
                 game->tetris[i]->tetraminoType = nextTetraminoAvailable(game->tetris[i]); // if avaible return the same otherwhise it finds automatically the ones avalaible
 
@@ -166,7 +167,8 @@ int insertTetraminoTaskM(Game *game)
                 if (points)
                 {
                     game->tetris[game->playerTurn]->score += points;
-                    for(int i=0; i<game->numberOfPlayers; i++){
+                    int i;
+                    for( i=0; i<game->numberOfPlayers; i++){
                         if(i != game->playerTurn){
                             invertTetrisRows(game->tetris[i], points/6); //invert 1 or 2 rows if the current player score more than 6 points
                         }
@@ -217,16 +219,17 @@ void cpu(Game *game){
             game->tetris[1]->tetraminoType = random%7;
             game->tetris[1]->tetraminoType = nextTetraminoAvailable(game->tetris[1]);
 
-            for (int i = 0; i < random%3; i++)
+            int i=0;
+            for ( i = 0; i < random%3; i++)
             {
                 switchTetraminoTaskM(game, 1);
             }
-            for (int i = 0; i < random%4; i++)
+            for ( i = 0; i < random%4; i++)
             {
                 rotateTetraminoTaskM(game);
             }
 
-            for (int i = 0; i < random%10; i++)
+            for ( i = 0; i < random%10; i++)
             {
                 int op = rand()%2;
                 game->key = (op == 0) ? MOVE_LEFT : MOVE_RIGHT;

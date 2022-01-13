@@ -68,7 +68,8 @@ void printMenu(Game* game){
 
     char* gamemodes[] = {"Single Player", "Multi Player", "VS CPU"};
 
-    for(int i=0; i<3; i++){
+    int i;
+    for(i=0; i<3; i++){
         if(i==game->gamemode) printw("[ ");
 
         printw("%s", gamemodes[i]);

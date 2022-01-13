@@ -32,9 +32,10 @@ void deleteMatrix(Matrix *matrix)
 
 void printMatrix(Matrix *matrix)
 {
-    for (int row = 0; row < matrix->rows; row++)
+    int row=0, col=0;
+    for (row = 0; row < matrix->rows; row++)
     {
-        for (int col = 0; col < matrix->cols; col++)
+        for (col = 0; col < matrix->cols; col++)
         {
             if (matrix->map[col + row * matrix->cols] == 1)
                 printw("%c", '@');
@@ -47,9 +48,10 @@ void printMatrix(Matrix *matrix)
 
 void clearMatrix(Matrix *matrix)
 {
-    for (int row = 0; row < matrix->rows; row++)
+    int row = 0, col=0;
+    for (row = 0; row < matrix->rows; row++)
     {
-        for (int col = 0; col < matrix->cols; col++)
+        for (col = 0; col < matrix->cols; col++)
         {
             matrix->map[col + row * matrix->cols] = 0;
         }

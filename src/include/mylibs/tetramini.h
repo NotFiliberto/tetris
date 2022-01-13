@@ -76,8 +76,9 @@ Tetramino
 /* \brief offset where tetramino start his first block, we have to check vertically every col
  */
 int offsetX(Tetramino* t){
-    for(int i=0; i<t->matrix.cols;i++){
-        for (int j = 0; j < t->matrix.rows; j++){
+    int i=0, j=0;
+    for(i=0; i<t->matrix.cols;i++){
+        for (j = 0; j < t->matrix.rows; j++){
             if(t->matrix.map[i + j*t->matrix.cols] == 1)
                 return i;
         }
@@ -87,9 +88,10 @@ int offsetX(Tetramino* t){
 
 int offsetY(Tetramino *t)
 {
-    for (int i = 0; i < t->matrix.rows; i++)
+    int i=0, j=0;
+    for (i = 0; i < t->matrix.rows; i++)
     {
-        for (int j = 0; j < t->matrix.cols; j++)
+        for (j = 0; j < t->matrix.cols; j++)
             if(t->matrix.map[j + i*t->matrix.rows] == 1)
                 return i; 
     }

@@ -33,7 +33,8 @@ Tetramino *createTetramino(Tetramino *t)
     tetramino->width = t->width;
     tetramino->matrix = *createMatrix(t->matrix.cols, t->matrix.rows);
 
-    for (int i = 0; i < t->matrix.cols * t->matrix.rows; i++)
+    int i=0;
+    for (i = 0; i < t->matrix.cols * t->matrix.rows; i++)
     {
         tetramino->matrix.map[i] = t->matrix.map[i];
     }
@@ -66,7 +67,9 @@ createTetris(int cols, int rows)
     // avaible tetramini
 
     tetris->availableTetramini = (int *)malloc(sizeof(int) * 7);
-    for (int i = 0; i < 7; i++)
+    
+    int i=0;
+    for (i = 0; i < 7; i++)
     {
         tetris->availableTetramini[i] = DEFAULT_AVAILABILITY;
     }
@@ -94,9 +97,10 @@ int isIntersected(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
     int startXTetramino = offsetX(t);
     int startYTetramino = offsetY(t);
 
-    for (int i = 0; i < t->heigth; i++)
+    int i=0, j=0;
+    for ( i = 0; i < t->heigth; i++)
     {
-        for (int j = 0; j < t->width; j++)
+        for ( j = 0; j < t->width; j++)
         {
             if (t->matrix.map[(i + startYTetramino) * t->matrix.cols + (j + startXTetramino)] == 1 && tetrisMatrix->map[(y + i) * tetrisMatrix->cols + (x + j)] == 1)
                 return 1;
@@ -110,8 +114,8 @@ int isIntersected(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
 int ySlotStatus(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
 {
 
-    int counter = 0;
-    for (int j = 0; j < t->width; j++)
+    int counter = 0, j=0;
+    for ( j = 0; j < t->width; j++)
     {
         if (tetrisMatrix->map[tetrisMatrix->cols * y + x + j] == 1)
             counter++;
@@ -122,14 +126,14 @@ int ySlotStatus(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
 
 int findY(Matrix *tetrisMatrix, Tetramino *t, int x)
 {
-    int y, count = 0, flag = -1;
+    int y, count = 0, flag = -1, k=0, z=0;
 
     for (y = 0; y < tetrisMatrix->rows - t->heigth + 1; y++)
     {
         // check the last row of tetramino with every row of tetris matrix for a "gravity check"
-        for (int k = 0; k < t->heigth; k++)
+        for ( k = 0; k < t->heigth; k++)
         {
-            for (int z = 0; z < t->width; z++)
+            for ( z = 0; z < t->width; z++)
             {
                 if (t->matrix.map[(t->heigth - 1 + offsetY(t)) * t->matrix.cols + (z + offsetX(t))] == 1 && tetrisMatrix->map[(y + k) * tetrisMatrix->cols + (x + z)] == 1)
                     return y - 1;
@@ -170,9 +174,11 @@ int insertTetramino(Matrix *tetrisMatrix, Tetramino *t, int x, int y, int gravit
         // its possible
         if (y < 0)
             return 0;
-        for (int row = offY; row < t->matrix.rows; row++)
+
+        int row,col;
+        for ( row = offY; row < t->matrix.rows; row++)
         {
-            for (int col = offX; col < t->matrix.cols; col++)
+            for ( col = offX; col < t->matrix.cols; col++)
             {
                 if (t->matrix.map[(col) + row * t->matrix.cols] == 1)
                 {
@@ -193,14 +199,16 @@ Matrix *rotateMatrix90Clockwise(Matrix *matrix)
     Matrix *trasposedMatrix = createMatrix(matrix->rows, matrix->cols); // invert cols with rows for future improvement
 
     // logic for calculate trasposed matrix
-    for (int row = 0; row < matrix->rows; row++)
-        for (int col = 0; col < matrix->cols; col++)
+
+    int row,col,j;
+    for ( row = 0; row < matrix->rows; row++)
+        for ( col = 0; col < matrix->cols; col++)
             trasposedMatrix->map[row * trasposedMatrix->cols + col] = matrix->map[col * matrix->rows + row];
 
     Matrix *rotatedMatrix90Clockwise = createMatrix(trasposedMatrix->rows, trasposedMatrix->cols); // invert for the same reason of before
     // reverse the order of cols
-    for (int row = 0; row < matrix->rows; row++)
-        for (int col = trasposedMatrix->cols - 1, j = 0; col > -1; col--, j++)
+    for ( row = 0; row < matrix->rows; row++)
+        for ( col = trasposedMatrix->cols - 1, j = 0; col > -1; col--, j++)
             rotatedMatrix90Clockwise->map[row * rotatedMatrix90Clockwise->cols + j] = trasposedMatrix->map[row * rotatedMatrix90Clockwise->cols + col];
 
     return rotatedMatrix90Clockwise;
@@ -243,7 +251,8 @@ void printTetraminiAvailability(Tetris *tetris, int typesPerRow)
 {
     init_pair(1, COLOR_WHITE, COLOR_CYAN);
     // printw("[Current Type %c] > %d\n\n", typeToLetter(tetris->tetramino->code), tetris->availableTetramini[tetris->tetramino->code]);
-    for (int i = 0; i < 7; i++)
+    int i;
+    for ( i = 0; i < 7; i++)
     {
         if (i > 1 && i % (typesPerRow) == 0)
             printw("\n");
@@ -261,7 +270,7 @@ void printTetraminiAvailability(Tetris *tetris, int typesPerRow)
 int totalAvailability(Tetris *tetris)
 {
     int tot = 0, i = 0;
-    for (int i = 0; i < 7; i++)
+    for ( i = 0; i < 7; i++)
     {
         tot += tetris->availableTetramini[i];
     }
@@ -274,7 +283,8 @@ int nextTetraminoAvailable(Tetris *tetris)
 
     if (totalAvailability > 0)
     {
-        for (int i = 0; i < 7; i++)
+        int i=0;
+        for ( i = 0; i < 7; i++)
         {
             if (tetraminoAvailability(tetris, (tetris->tetraminoType + i) % 7) > 0)
                 return (tetris->tetraminoType + i) % 7;
@@ -293,8 +303,8 @@ int gameEnded(Tetris *tetris)
         return 1; // game ended
 
     // first thing to do, find the first position of empty x
-    int pos = -1;
-    for (int i = 0; i < tetris->matrix->cols && pos == -1; i++)
+    int pos = -1, i=0;
+    for ( i = 0; i < tetris->matrix->cols && pos == -1; i++)
     {
         if (tetris->matrix->map[i] == 0)
             pos = i;
@@ -303,14 +313,15 @@ int gameEnded(Tetris *tetris)
     if (pos != -1)
     {
         Tetramino *tetramino;
-        for (int pieceType = 0; pieceType < 7; pieceType++)
+        int rotation, col, pieceType;
+        for (pieceType = 0; pieceType < 7; pieceType++)
         { // for every piece
             if (tetraminoAvailability(tetris, pieceType) > 0)
             { // first check if the piece is avaible
                 tetramino = createTetramino(&tetramini[pieceType]);
-                for (int rotation = 0; rotation < 4; rotation++)
+                for ( rotation = 0; rotation < 4; rotation++)
                 { // test every rotation
-                    for (int col = 0; col < tetris->matrix->cols; col++)
+                    for ( col = 0; col < tetris->matrix->cols; col++)
                     {
                         if (insertTetramino(tetris->matrix, tetramino, col, 0, GRAVITY, 0))
                         { // important to enable gravity
@@ -334,8 +345,8 @@ int gameEnded(Tetris *tetris)
 
 void removeRow(Tetris *tetris, int row)
 {
-    int startIndex = (row * tetris->matrix->cols + tetris->matrix->cols) - 1;
-    for (int i = startIndex; i > -1; i--)
+    int startIndex = (row * tetris->matrix->cols + tetris->matrix->cols) - 1, i;
+    for ( i = startIndex; i > -1; i--)
     {
         if (i >= tetris->matrix->cols)
             tetris->matrix->map[i] = tetris->matrix->map[i - tetris->matrix->cols]; // shift
@@ -384,8 +395,9 @@ int scorePoints(Tetris *tetris)
 
         // points to assing based on calculated size
         points = pointsBoard[size];
+        int i;
 
-        for (int i = 0; i < size; i++)
+        for ( i = 0; i < size; i++)
         {
             removeRow(tetris, rowsToDelete[i]);
         }
@@ -399,7 +411,8 @@ int scorePoints(Tetris *tetris)
 }
 
 void invertRow(int* row, int width){
-    for(int i=0; i<width; i++){
+    int i;
+    for( i=0; i<width; i++){
         if(row[i] == 0)
             row[i] = 1;
         else
@@ -408,15 +421,16 @@ void invertRow(int* row, int width){
 }
 
 void invertTetrisRows(Tetris* tetris, int nrowsToInvert){
-    for(int i = 0;  i < nrowsToInvert; i++){
+    int i=0;
+    for( i = 0;  i < nrowsToInvert; i++){
         invertRow(&tetris->matrix->map[tetris->matrix->cols*(tetris->matrix->rows-i-1)], tetris->matrix->cols);
     }
 }
 
 int getWinner(Tetris** tetris, int numberOfPlayers){
-    int winner = -1, max=0, posMax=0; //default none cuz 2 players could have the same score
+    int winner = -1, max=0, posMax=0, i=0; //default none cuz 2 players could have the same score
 
-    for(int i=0; i<numberOfPlayers; i++){
+    for( i=0; i<numberOfPlayers; i++){
         if(i==0){
             max = tetris[i]->score;
         }else{
