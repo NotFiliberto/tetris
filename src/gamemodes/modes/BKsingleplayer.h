@@ -1,3 +1,5 @@
+//backup file 
+/*
 void printGameThings(Game* game);
 void switchTetraminoTask(Game* game, int incrementType);
 void insertTetraminoTask(Game* game);
@@ -159,3 +161,4 @@ void testing(Game* game)
     printGameThings(game);
     printw("--> testing");
 }
+*/

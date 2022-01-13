@@ -40,12 +40,13 @@ int main(void)
                 switch (game->gamemode)
                 {
                 case SINGLE_PLAYER:
-                    singlePlayer(game);
+                    multiplayer(game);
                     break;
                 case MULTI_PLAYER: 
                     multiplayer(game);
                     break;
                 case VS_CPU:
+                    game->playerTurn = 0; //default start with human
                     multiplayer(game);
                     break;
                 }

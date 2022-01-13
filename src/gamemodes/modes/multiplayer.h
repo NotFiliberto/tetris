@@ -11,8 +11,9 @@ void cpu(Game *game);
 
 int multiplayer(Game *game)
 {
-
     game->numberOfPlayers = 2;
+    if(game->gamemode == 0)
+        game->numberOfPlayers = 1;
     game->tetris = initGame(game->numberOfPlayers); // init with same pieces pull and create multiple Tetris obj
     printGameThingsMultiplayer(game);
 
