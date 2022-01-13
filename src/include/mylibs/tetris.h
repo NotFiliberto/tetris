@@ -412,3 +412,23 @@ void invertTetrisRows(Tetris* tetris, int nrowsToInvert){
         invertRow(&tetris->matrix->map[tetris->matrix->cols*(tetris->matrix->rows-i-1)], tetris->matrix->cols);
     }
 }
+
+int getWinner(Tetris** tetris, int numberOfPlayers){
+    int winner = -1, max=0, posMax=0; //default none cuz 2 players could have the same score
+
+    for(int i=0; i<numberOfPlayers; i++){
+        if(i==0){
+            max = tetris[i]->score;
+        }else{
+            if(max < tetris[i]->score){
+                max = tetris[i]->score;
+                posMax = i;
+            }
+        }
+    }
+
+    if(max != 0)
+        winner = posMax;
+    
+    return winner;
+}

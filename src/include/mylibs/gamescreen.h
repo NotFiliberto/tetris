@@ -141,6 +141,16 @@ void printGameStats(Tetris** tetris, int numberOfPlayers, int playerTurn, WINDOW
             char endGameStr[] = "The game is over!";
             wmove(win, getcury(win)+1, ((SPACE_BETWEEH_GAMES * (numberOfPlayers-1)) + DEFAULT_WIDTH)/2 - (strlen(endGameStr)/2));
             printwc(win, COLOR_WHITE, COLOR_RED, 0, endGameStr);
+
+            //print winner
+            if(numberOfPlayers > 1){
+                int w = getWinner(tetris, numberOfPlayers); 
+                char winnerStr[50] = "WINNER: player [%d]";
+                if(w == -1)
+                    (void)strncpy(winnerStr, "WINNER: None, same score for each player", sizeof(winnerStr));
+                wmove(win, getcury(win) + 1, ((SPACE_BETWEEH_GAMES * (numberOfPlayers - 1)) + DEFAULT_WIDTH) / 2 - (strlen(winnerStr) / 2));
+                printwc(win, COLOR_GREEN, COLOR_CYAN, 1, winnerStr, w);
+            }
         }
     }
 
