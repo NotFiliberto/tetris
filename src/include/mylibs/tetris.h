@@ -75,9 +75,9 @@ createTetris(int cols, int rows)
     }
 
     // FOR TESTING THINGS
-    /*     tetris->matrix = createMatrix(7, 10);
-        free(tetris->matrix->map);
-        tetris->matrix->map = testingMap; */
+    //     tetris->matrix = createMatrix(7, 10);
+    //   free(tetris->matrix->map);
+    //  tetris->matrix->map = testingMap; 
     // FOR TESTING THINGS
 
     return tetris;
@@ -89,9 +89,7 @@ void deleteTetris(Tetris *tetris)
     free(tetris);
 }
 
-/*
-    \brief check if 2 matrix are intersected each other
- */
+// check if 2 matrix are intersected each other
 int isIntersected(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
 {
     int startXTetramino = offsetX(t);

@@ -73,8 +73,7 @@ Tetramino
         {TETRAMINO_T, {3, 3, T}, 3, 2, 0, 0},
 };
 
-/* \brief offset where tetramino start his first block, we have to check vertically every col
- */
+//offset where tetramino start his first block, we have to check vertically every col
 int offsetX(Tetramino* t){
     int i=0, j=0;
     for(i=0; i<t->matrix.cols;i++){
