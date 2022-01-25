@@ -9,6 +9,16 @@
 #define TETRAMINO_Z 5
 #define TETRAMINO_T 6
 
+/** @struct Tetramino
+ * @brief Structure that rappresents the tetramino model
+ *
+ * @var Tetramino::code the uniqe code for the type of the tetramino
+ * @var Tetramino::matrix matrix rappresenation of the tetramino
+ * @var Tetramino::width width of the tetramino
+ * @var Tetramino::heigth heigh of tetramino
+ * @var Tetramino::offsetX number of empty rows before the start of the tetramino in the matrix
+ * @var Tetramino::offsetY number of empty cols before the start of the tetramino in the matrix
+ */
 typedef struct tetramino
 {
     int code;
@@ -19,6 +29,10 @@ typedef struct tetramino
     int offsetY;
 } Tetramino;
 
+/**
+ * @brief I
+ * rappresent the "I" piece in the original tetris
+ */
 int I[] = {
         0, 1, 0, 0,
         0, 1, 0, 0,
@@ -26,42 +40,70 @@ int I[] = {
         0, 1, 0, 0
     };
 
+/**
+ * @brief J
+ * rappresent the "J" piece in the original tetris
+ */
 int J[] = {
     1, 0, 0,
     1, 1, 1,
     0, 0, 0
 };
 
+/**
+ * @brief L
+ * rappresent the "L" piece in the original tetris
+ */
 int L[] = {
     0, 0, 1,
     1, 1, 1,
     0, 0, 0
 };
 
+/**
+ * @brief O
+ * rappresent the "O" piece in the original tetris
+ */
 int O[] = {
     1, 1, 0,
     1, 1, 0,
     0, 0, 0
 };
 
+/**
+ * @brief S
+ * rappresent the "S" piece in the original tetris
+ */
 int S[] = {
     0, 1, 1,
     1, 1, 0,
     0, 0, 0
 };
 
+/**
+ * @brief Z
+ * rappresent the "Z" piece in the original tetris
+ */
 int Z[] = {
     1, 1, 0,
     0, 1, 1,
     0, 0, 0
 };
 
+/**
+ * @brief T
+ * rappresent the "T" piece in the original tetris
+ */
 int T[] = {
     0, 1, 0,
     1, 1, 1,
     0, 0, 0
 };
 
+/**
+ * @brief immutable array of tetramini models
+ * Array that contains all types of the tetramino
+ */
 Tetramino 
     tetramini[] = {
         {TETRAMINO_I, {4, 4, I}, 1, 4, 0, 0},
@@ -73,7 +115,14 @@ Tetramino
         {TETRAMINO_T, {3, 3, T}, 3, 2, 0, 0},
 };
 
-/* offset where tetramino start his first block, we have to check vertically every col  */
+/**
+ * @brief calculate the offset for the X
+ *
+ * offset where tetramino starts his first block(full cell) in the x axis
+ *
+ * @param t tetramino
+ * @return the offset calculated
+ */
 int offsetX(Tetramino* t){
     int i=0, j=0;
     for(i=0; i<t->matrix.cols;i++){
@@ -85,6 +134,14 @@ int offsetX(Tetramino* t){
     return -1; /* if empty matrix */
 }
 
+/**
+ * @brief calculate the offset for the Y
+ *
+ * offset where tetramino starts his first "full cell" in the x axis
+ *
+ * @param t tetramino
+ * @return the offset calculated
+ */
 int offsetY(Tetramino *t)
 {
     int i=0, j=0;
@@ -97,6 +154,12 @@ int offsetY(Tetramino *t)
     return -1; /* if empty matrix */
 }
 
+/**
+ * @brief give the corrisponding letter based of the code of the tetramino in input
+ * 
+ * @param type type of tetramino
+ * @return the letter of corrisponding tetramino code type
+ */
 char typeToLetter(int type){
     if(type >=0 && type < 8){
         char* letters = "IJLOSZT";

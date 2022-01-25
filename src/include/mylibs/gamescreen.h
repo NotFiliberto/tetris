@@ -138,7 +138,7 @@ void printGameStats(Tetris** tetris, int numberOfPlayers, int playerTurn, WINDOW
     for ( i = 0; i < numberOfPlayers; i++)
     {
         /* check game status */
-        if (tetris[i]->gameStatus == 1)
+        if (tetris[i]->tetrisStatus == 1)
         {
             char endGameStr[] = "The game is over!";
             wmove(win, getcury(win)+1, ((SPACE_BETWEEH_GAMES * (numberOfPlayers-1)) + DEFAULT_WIDTH)/2 - (strlen(endGameStr)/2));

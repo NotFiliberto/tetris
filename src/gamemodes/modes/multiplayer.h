@@ -94,7 +94,7 @@ void printGameThingsMultiplayer(Game *game)
     printGameStats(game->tetris, game->numberOfPlayers, game->playerTurn, game->win);
 
     printw("\n\n---> Player Turn: ");
-    printwc(game->win, playerColors[game->playerTurn].textColor, playerColors[game->playerTurn].backgroudColor, game->playerTurn, "%d\n\n", game->playerTurn);
+    printwc(game->win, playerColors[game->playerTurn].textColor, playerColors[game->playerTurn].backgroudColor, game->playerTurn, "%d", game->playerTurn);
 
     printTetris(game->tetris, game->numberOfPlayers, game->playerTurn, game->win);
 }
@@ -114,7 +114,7 @@ int gameStatus(Game *game)
 
     for ( i = 0; i < game->numberOfPlayers; i++)
     {
-        if (game->tetris[i]->gameStatus == 1)
+        if (game->tetris[i]->tetrisStatus == 1)
             gameStatus = 1;
     }
     return gameStatus;
@@ -174,9 +174,9 @@ int insertTetraminoTaskM(Game *game)
                         }
                     }
                 }
-                game->tetris[game->playerTurn]->gameStatus = gameEnded(game->tetris[game->playerTurn]);
+                game->tetris[game->playerTurn]->tetrisStatus = gameEnded(game->tetris[game->playerTurn]);
 
-                if (!game->tetris[game->playerTurn]->gameStatus) /* swap piece automaticly if needed */
+                if (!game->tetris[game->playerTurn]->tetrisStatus) /* swap piece automaticly if needed */
                     switchTetraminoTaskM(game, 0);               /* check next piece avaible */
                 game->playerTurn = nextPlayerTurn(game);
             }

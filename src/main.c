@@ -1,3 +1,11 @@
+/**
+ * @file main.c
+ * @author Filiberto
+ * @mainpage X-Tetris
+ * @section Intro
+ * Description for intro 
+ */
+
 #include "gamemodes/gamemodes.h"
 
 void printMenu(Game *game);

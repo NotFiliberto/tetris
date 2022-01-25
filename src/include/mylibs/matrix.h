@@ -1,6 +1,13 @@
 #include "stdio.h"
 #include "stdlib.h"
 
+/** @struct Matrix
+ * @brief Matrix rappresentation
+ *
+ * @var Matrix::cols columns of the matrix
+ * @var Matrix::rows rows of the matrix
+ * @var Matrix::map array that rappresents evey value of the matrix
+ */
 typedef struct Matrix
 {
     int cols;
@@ -8,34 +15,42 @@ typedef struct Matrix
     int *map;
 } Matrix;
 
+/**
+ * @brief Create a Matrix object
+ *
+ * @param cols matrix's columns
+ * @param rows matrix's rows
+ * @return the matrix created
+ */
 Matrix *createMatrix(int cols, int rows)
 {
     Matrix *matrix = (Matrix *)malloc(sizeof(Matrix));
     matrix->cols = cols;
     matrix->rows = rows;
-
-    /*
-        matrix->map = (int **)malloc(sizeof(int) * rows);
-        for (int row = 0; row < rows; row++)
-            matrix->map[row] = (int *)malloc(sizeof(int) * cols);
-    */
-
     matrix->map = (int *)malloc(sizeof(int) * rows * cols);
-
     return matrix;
 }
 
+/**
+ * @brief delete matrix
+ *
+ * free memory space used by the matrix gived in input
+ *
+ * @param matrix matrix to delete
+ */
 void deleteMatrix(Matrix *matrix)
 {
-    /*     for (int i = 0; i < (matrix->rows * matrix->cols); i++)
-        free(&matrix->map[i]); 
-    */
     free(matrix);
 }
 
+/**
+ * @brief print the matrix in the terminal screen
+ *
+ * @param matrix the matrix to be printed
+ */
 void printMatrix(Matrix *matrix)
 {
-    int row=0, col=0;
+    int row = 0, col = 0;
     for (row = 0; row < matrix->rows; row++)
     {
         for (col = 0; col < matrix->cols; col++)
@@ -49,9 +64,16 @@ void printMatrix(Matrix *matrix)
     }
 }
 
+/**
+ * @brief clear every index of the matrix
+ *
+ * repleace every index of the matrix with a 0
+ *
+ * @param matrix the matrix to be cleared
+ */
 void clearMatrix(Matrix *matrix)
 {
-    int row = 0, col=0;
+    int row = 0, col = 0;
     for (row = 0; row < matrix->rows; row++)
     {
         for (col = 0; col < matrix->cols; col++)

@@ -1,17 +1,39 @@
+/**
+ * @file tetris.h
+ * @author Filiberto
+ * @brief Library for tetris game logic
+ */
+
 #include <stdlib.h>
 #include <string.h>
 
+/** @struct Tetris
+ * @brief tetris object session
+ * rappresent a single tetris game session with all of his game stuffs (map, score, ext...)
+ * 
+ * @param matrix the matrix of the session
+ * @param tetramino current tetramino selected, with all of his settings (offset, widht, height, ext...)
+ * @param tetraminoType current type of tetramino selected by the player
+ * @param lastX the position based on the "x axis" of the tetramino moved by the user
+ * @param availableTetramini array that contains the avaibility for every piece
+ * @param tetrisStatus status of the current tetris "session"
+ */
 typedef struct tetris
 {
-    Matrix *matrix;       /* matrix map */
-    Tetramino *tetramino; /* current tetramino selected, with all of his options */
-    int tetraminoType;    /* type of current tetramino */
-    int lastX;            /* last X position for the last tetramino */
+    Matrix *matrix;
+    Tetramino *tetramino;
+    int tetraminoType;
+    int lastX;
     int score;
     int *availableTetramini;
-    int gameStatus; /* 0 not finished */
+    int tetrisStatus;
 } Tetris;
 
+/**
+ * @brief testing map
+ *
+ * usefull testing map for testing things and new features
+ */
 int testingMap[] = {/* 10x7 */
                     0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0,
@@ -24,6 +46,12 @@ int testingMap[] = {/* 10x7 */
                     0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0};
 
+/**
+ * @brief Create a Tetramino object
+ *
+ * @param t the model of the tetramino
+ * @return Tetramino object
+ */
 Tetramino *createTetramino(Tetramino *t)
 {
     Tetramino *tetramino = (Tetramino *)malloc(sizeof(Tetramino));
@@ -44,11 +72,25 @@ Tetramino *createTetramino(Tetramino *t)
     return tetramino;
 }
 
+/**
+ * @brief free memory used for a tetramino
+ *
+ * @param t tetramino
+ *
+ * delete and free the memory used by the tetramino in input
+ */
 void deleteTetramino(Tetramino *t)
 {
     free(t);
 }
 
+/**
+ * @brief Create a Tetris object
+ *
+ * @param cols number of columns
+ * @param rows number of rows
+ * @return Tetris* object
+ */
 Tetris *
 createTetris(int cols, int rows)
 {
@@ -56,40 +98,48 @@ createTetris(int cols, int rows)
     tetris->tetraminoType = 0;
     tetris->lastX = 0;
     tetris->score = 0;
-    tetris->gameStatus = 0; /* not finished */
+    tetris->tetrisStatus = 0; /* not finished */
 
     tetris->tetramino = createTetramino(&tetramini[TETRAMINO_I]); /* copy tetramino I from the array */
 
     tetris->matrix = createMatrix(cols, rows); /* the fuction returns the pointer of the created matrix */
     clearMatrix(tetris->matrix);               /* set up the effective map to all 0 */
 
-    /* avaible tetramini */
-
-    tetris->availableTetramini = (int *)malloc(sizeof(int) * 7);
+    tetris->availableTetramini = (int *)malloc(sizeof(int) * 7); /* avaible tetramini */
 
     int i = 0;
     for (i = 0; i < 7; i++)
     {
         tetris->availableTetramini[i] = DEFAULT_AVAILABILITY;
     }
-    /*
-        FOR TESTING THINGS
-        tetris->matrix = createMatrix(7, 10);
-        free(tetris->matrix->map);
-        tetris->matrix->map = testingMap;
-        FOR TESTING THINGS
-    */
 
     return tetris;
 }
 
+/**
+ * @brief free memory used for the tetris session
+ *
+ * @param tetris tetris session
+ *
+ * delete and free the memory used by the tetris session in input
+ */
 void deleteTetris(Tetris *tetris)
 {
     deleteMatrix(tetris->matrix);
     free(tetris);
 }
 
-/* check if 2 matrix are intersected each other */
+/**
+ * @brief check if 2 matrix intersect each other
+ *
+ * check if the tetramino collide with any point in the tetris map
+ *
+ * @param tetrisMatrix matrix of the tetris session
+ * @param t tetramino that has to be checked
+ * @param x x position in the tetris matrix session
+ * @param y y position in the tetris matrix session
+ * @return 1 if the two matrix have some common point otherwhise 0
+ */
 int isIntersected(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
 {
     int startXTetramino = offsetX(t);
@@ -108,7 +158,15 @@ int isIntersected(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
     return 0;
 }
 
-/* check if the y of the matrix in a specif x is empty or not for the width of the piece */
+/**
+ * @brief check if the y of the matrix for the width of the tetramino in a specif x is empty or not
+ *
+ * @param tetrisMatrix matrix of the tetris session
+ * @param t tetramino in input
+ * @param x position in the tetris matrix session
+ * @param y y position in the tetris matrix session
+ * @return a positive number > 0 if the y considered is full, so the tetramino cant be added in that coords
+ */
 int ySlotStatus(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
 {
 
