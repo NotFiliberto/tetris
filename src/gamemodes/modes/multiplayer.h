@@ -1,3 +1,8 @@
+/**
+ * @file multiplayer.h
+ * @brief wrapper for all gamemodes, singleplayer, multiplayer, vs cpu
+ */
+
 Tetris **initGame(int numberOfPlayers);
 void printGameThingsMultiplayer(Game *game);
 
@@ -9,6 +14,12 @@ void moveTetraminoTaskM(Game *game);
 void rotateTetraminoTaskM(Game *game);
 void cpu(Game *game);
 
+/**
+ * @brief gameloop for gamemode selected 
+ * 
+ * @param game game object that cointains everything releated to the game
+ * @return 0 when the player change the gamemode 
+ */
 int multiplayer(Game *game)
 {
     game->numberOfPlayers = 2;
@@ -66,6 +77,12 @@ int multiplayer(Game *game)
     return 0;
 }
 
+/**
+ * @brief create tetris game sessions
+ * 
+ * @param numberOfPlayers number of players
+ * @return Tetris** array that cointains every game session
+ */
 Tetris **initGame(int numberOfPlayers)
 {
     Tetris **tetris;
@@ -88,6 +105,11 @@ Tetris **initGame(int numberOfPlayers)
     return tetris;
 }
 
+/**
+ * @brief print all game things in the terminal, such as: scores, maps, ext...
+ *
+ * @param game game object that cointains everything releated to the game
+ */
 void printGameThingsMultiplayer(Game *game)
 {
     clear();
@@ -99,12 +121,24 @@ void printGameThingsMultiplayer(Game *game)
     printTetris(game->tetris, game->numberOfPlayers, game->playerTurn, game->win);
 }
 
+/**
+ * @brief get the index of the next player turn
+ *
+ * @param game game object that cointains everything releated to the game
+ * @return the next player turn 
+ */
 int nextPlayerTurn(Game *game)
 {
     int turn = game->playerTurn;
     return (game->playerTurn + 1) % game->numberOfPlayers;
 }
 
+/**
+ * @brief check the game status
+ *
+ * @param game game object that cointains everything releated to the game
+ * @return 1 if the game is over otherwhise 0
+ */
 int gameStatus(Game *game)
 {
     int gameStatus = 0, i; /* not finished */
@@ -120,6 +154,14 @@ int gameStatus(Game *game)
     return gameStatus;
 }
 
+/**
+ * @brief switch tetramino in the terminal when the user press SPACE
+ *
+ * this function is also used to switch automatically the tetramino of the other tetris game sessions if the current player uses the last tetramino for a specific type
+ *
+ * @param game game object that cointains everything releated to the game
+ * @param incrementType flag used to switch the type of the tetramino
+ */
 void switchTetraminoTaskM(Game *game, int incrementType)
 {
     if (!gameStatus(game))
@@ -149,6 +191,12 @@ void switchTetraminoTaskM(Game *game, int incrementType)
     }
 }
 
+/**
+ * @brief manage insert task when the user wants to insert the tetramino into the map
+ *
+ * @param game game object that cointains everything releated to the game
+ * @return 1 if the tetramino is inserted, otherwhise 0
+ */
 int insertTetraminoTaskM(Game *game)
 {
     int inserted = 0;
@@ -170,11 +218,13 @@ int insertTetraminoTaskM(Game *game)
                     int i;
                     for( i=0; i<game->numberOfPlayers; i++){
                         if(i != game->playerTurn){
-                            invertTetrisRows(game->tetris[i], points / 6); /* invert 1 or 2 rows if the current player score more than 6 points */
+
+                            if(points >= 6)
+                                invertTetrisRows(game->tetris[i], (points / 6) +2); /* invert 3 or 4 rows if the current player score more than 6 points */
                         }
                     }
                 }
-                game->tetris[game->playerTurn]->tetrisStatus = gameEnded(game->tetris[game->playerTurn]);
+                game->tetris[game->playerTurn]->tetrisStatus = gameOver(game->tetris[game->playerTurn]);
 
                 if (!game->tetris[game->playerTurn]->tetrisStatus) /* swap piece automaticly if needed */
                     switchTetraminoTaskM(game, 0);               /* check next piece avaible */
@@ -186,6 +236,11 @@ int insertTetraminoTaskM(Game *game)
     return inserted;
 }
 
+/**
+ * @brief manage tetramino moving in the terminal, when the user wants to move the tetramino in the left/right side
+ *
+ * @param game game object that cointains everything releated to the game
+ */
 void moveTetraminoTaskM(Game *game)
 {
     if (!gameStatus(game))
@@ -195,6 +250,11 @@ void moveTetraminoTaskM(Game *game)
     }
 }
 
+/**
+ * @brief manage tetramino rotating task, when the users wants to rotate the selecte tetramino
+ *
+ * @param game game object that cointains everything releated to the game
+ */
 void rotateTetraminoTaskM(Game *game)
 {
     if (!gameStatus(game))
@@ -207,6 +267,11 @@ void rotateTetraminoTaskM(Game *game)
     }
 }
 
+/**
+ * @brief manage the turn for the cpu
+ *
+ * @param game game object that cointains everything releated to the game
+ */
 void cpu(Game *game){
     if (!gameStatus(game) && game->gamemode == 2)
     {

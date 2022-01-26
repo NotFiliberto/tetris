@@ -1,3 +1,8 @@
+/**
+ * @file headers.h
+ * @brief library wrapper for the other libraries 
+ */
+
 #include <stdio.h>
 #include <time.h>
 #include <ctype.h>

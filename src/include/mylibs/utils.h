@@ -1,3 +1,9 @@
+/**
+ * @file utils.h
+ * @brief Library that contains useful functions, structures, ecc...
+ *
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -5,9 +11,8 @@
 #define CLS system("CLS");
 
 /**
- * @brief string type
+ * @brief type to rappresent a string
  *
- * type to rappresent a string
  */
 typedef char *String;
 
@@ -33,7 +38,6 @@ char intToChar(int i)
     return i + '0';
 }
 
-/* module func for negative and positive numbers */
 /**
  * @brief % operator without sign
  *

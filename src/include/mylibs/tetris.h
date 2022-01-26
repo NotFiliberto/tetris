@@ -1,6 +1,5 @@
 /**
  * @file tetris.h
- * @author Filiberto
  * @brief Library for tetris game logic
  */
 
@@ -10,7 +9,6 @@
 /** @struct Tetris
  * @brief tetris object session
  * rappresent a single tetris game session with all of his game stuffs (map, score, ext...)
- * 
  * @param matrix the matrix of the session
  * @param tetramino current tetramino selected, with all of his settings (offset, widht, height, ext...)
  * @param tetraminoType current type of tetramino selected by the player
@@ -30,9 +28,7 @@ typedef struct tetris
 } Tetris;
 
 /**
- * @brief testing map
- *
- * usefull testing map for testing things and new features
+ * @brief testing map, useful testing map for testing things and new features
  */
 int testingMap[] = {/* 10x7 */
                     0, 0, 0, 0, 0, 0, 0,
@@ -73,11 +69,9 @@ Tetramino *createTetramino(Tetramino *t)
 }
 
 /**
- * @brief free memory used for a tetramino
+ * @brief free memory used for a tetramino, delete and free the memory used by the tetramino in input
  *
  * @param t tetramino
- *
- * delete and free the memory used by the tetramino in input
  */
 void deleteTetramino(Tetramino *t)
 {
@@ -117,11 +111,10 @@ createTetris(int cols, int rows)
 }
 
 /**
- * @brief free memory used for the tetris session
+ * @brief free memory used for the tetris session, delete and free the memory used by the tetris session in input
  *
  * @param tetris tetris session
  *
- * delete and free the memory used by the tetris session in input
  */
 void deleteTetris(Tetris *tetris)
 {
@@ -130,9 +123,7 @@ void deleteTetris(Tetris *tetris)
 }
 
 /**
- * @brief check if 2 matrix intersect each other
- *
- * check if the tetramino collide with any point in the tetris map
+ * @brief check if 2 matrix intersect each other, check if the tetramino collide with any point in the tetris map
  *
  * @param tetrisMatrix matrix of the tetris session
  * @param t tetramino that has to be checked
@@ -180,6 +171,14 @@ int ySlotStatus(Matrix *tetrisMatrix, Tetramino *t, int x, int y)
     return counter;
 }
 
+/**
+ * @brief find (if possible) the current y for the tetramino that has to be inserted into tetris matrix map
+ *
+ * @param tetrisMatrix tetris matrix map
+ * @param t tetramino to be inserted
+ * @param x position in the tetris matrix map
+ * @return the position (y) to insert the tetramino if possible, otherwhise -1
+ */
 int findY(Matrix *tetrisMatrix, Tetramino *t, int x)
 {
     int y, count = 0, flag = -1, k = 0, z = 0;
@@ -207,6 +206,17 @@ int findY(Matrix *tetrisMatrix, Tetramino *t, int x)
     return count - 1;
 }
 
+/**
+ * @brief insert the tetramino into the tetris matrix map
+ *
+ * @param tetrisMatrix tetris matrix map
+ * @param t tetramino to insert
+ * @param x position
+ * @param y position
+ * @param gravity 1 if enabled
+ * @param insertFLAG 1 if the fuction has to insert for real the tetramino
+ * @return 1 if the tetramino is inserted in the tetris matrix map, otherwhise 0
+ */
 int insertTetramino(Matrix *tetrisMatrix, Tetramino *t, int x, int y, int gravity, int insertFLAG)
 {
     if (x > DEFAULT_WIDTH || x < 0 || y < 0)
@@ -248,6 +258,12 @@ int insertTetramino(Matrix *tetrisMatrix, Tetramino *t, int x, int y, int gravit
     return 0; /* not inserted */
 }
 
+/**
+ * @brief rotate square matrix 90° clockwhise
+ *
+ * @param matrix the matrix that has to be rotated
+ * @return the matrix rotated
+ */
 Matrix *rotateMatrix90Clockwise(Matrix *matrix)
 {
     Matrix *trasposedMatrix = createMatrix(matrix->rows, matrix->cols); /* invert cols with rows for future improvement */
@@ -268,6 +284,12 @@ Matrix *rotateMatrix90Clockwise(Matrix *matrix)
     return rotatedMatrix90Clockwise;
 }
 
+/**
+ * @brief rotate tetramino and update its related stuffs (offset, width, ecc...)
+ *
+ * @param t tetramino to rotate
+ * @return tetramino rotated
+ */
 Tetramino *rotateTetramino(Tetramino *t)
 {
     Matrix *rotated = rotateMatrix90Clockwise(&t->matrix);
@@ -289,11 +311,25 @@ Tetramino *rotateTetramino(Tetramino *t)
    ======= TETRAMINO AVAIBILITY ========
    ===================================== */
 
+/**
+ * @brief get the tetramino availabitlity for a specific tetramino
+ *
+ * @param tetris single tetris session
+ * @param tetraminoCode the code of the tetramino
+ * @return the current avaiability for the tetramino in input
+ */
 int tetraminoAvailability(Tetris *tetris, int tetraminoCode)
 {
     return tetris->availableTetramini[tetraminoCode];
 }
 
+/**
+ * @brief decrement the tetramino availabitliy for a specific tetramino
+ *
+ * @param tetris single tetris session
+ * @param tetraminoCode the code of the tetramino
+ * @return availabitliy of the tetramino in input if > 0, otherwhise -1
+ */
 int decrementTetraminoAvailability(Tetris *tetris, int tetraminoCode)
 {
     if (tetris->availableTetramini[tetraminoCode] > 0)
@@ -301,6 +337,12 @@ int decrementTetraminoAvailability(Tetris *tetris, int tetraminoCode)
     return -1;
 }
 
+/**
+ * @brief print the availabitliy of every type of tetramino in the screen
+ *
+ * @param tetris single tetris session
+ * @param typesPerRow types of tetramino printed per row
+ */
 void printTetraminiAvailability(Tetris *tetris, int typesPerRow)
 {
     init_pair(1, COLOR_WHITE, COLOR_CYAN);
@@ -321,6 +363,12 @@ void printTetraminiAvailability(Tetris *tetris, int typesPerRow)
     }
 }
 
+/**
+ * @brief get the total availability for a specific game session
+ *
+ * @param tetris single game session
+ * @return total availability for the specified game session
+ */
 int totalAvailability(Tetris *tetris)
 {
     int tot = 0, i = 0;
@@ -331,7 +379,12 @@ int totalAvailability(Tetris *tetris)
     return tot;
 }
 
-/* usefull when u swap piece or u just insert new one */
+/**
+ * @brief get the code of the next tetramino available based on the state of the provided tetris session, useful when u swap piece or u just insert new one
+ *
+ * @param tetris single tetris session
+ * @return the code of the next tetramino available
+ */
 int nextTetraminoAvailable(Tetris *tetris)
 {
 
@@ -344,17 +397,19 @@ int nextTetraminoAvailable(Tetris *tetris)
                 return (tetris->tetraminoType + i) % 7;
         }
     }
-    return -1; /* and the game is ended */
+    return -1; /* and the game is Over */
 }
 
-/* =====================================
-   ======= TETRAMINO AVAIBILITY ========
-   ===================================== */
-
-int gameEnded(Tetris *tetris)
+/**
+ * @brief check if the tetris game session is over
+ *
+ * @param tetris single tetris session
+ * @return 1 if the game is over otherwhise 0
+ */
+int gameOver(Tetris *tetris)
 {
     if (totalAvailability(tetris) == 0)
-        return 1; /* game ended */
+        return 1; /* tetris game Over */
 
     /* first thing to do, find the first position of empty x */
     int pos = -1, i = 0;
@@ -397,6 +452,12 @@ int gameEnded(Tetris *tetris)
     return 1;
 }
 
+/**
+ * @brief remove row from tetris map
+ *
+ * @param tetris single tetris session
+ * @param row index of row to remove from the map
+ */
 void removeRow(Tetris *tetris, int row)
 {
     int startIndex = (row * tetris->matrix->cols + tetris->matrix->cols) - 1, i;
@@ -409,6 +470,13 @@ void removeRow(Tetris *tetris, int row)
     }
 }
 
+/**
+ * @brief find rows that must be removed
+ *
+ * @param tetris single tetris session
+ * @param size output param for the output array
+ * @return return an array that cointans the index of the rows to remove
+ */
 int *findRowsToRemove(Tetris *tetris, int *size)
 {
 
@@ -439,6 +507,12 @@ int *findRowsToRemove(Tetris *tetris, int *size)
     return rowsToDelete;
 }
 
+/**
+ * @brief delete full rows and update game score
+ *
+ * @param tetris single tetris game session
+ * @return points scored
+ */
 int scorePoints(Tetris *tetris)
 {
     int size, *rowsToDelete = findRowsToRemove(tetris, &size), points = 0;
@@ -464,6 +538,12 @@ int scorePoints(Tetris *tetris)
     return points;
 }
 
+/**
+ * @brief invert value of rows, if the cell contains 0 change it with 1
+ *
+ * @param row the row to invert
+ * @param width size of the row
+ */
 void invertRow(int *row, int width)
 {
     int i;
@@ -476,6 +556,12 @@ void invertRow(int *row, int width)
     }
 }
 
+/**
+ * @brief invert values of tetris rows
+ *
+ * @param tetris single tetris game session
+ * @param nrowsToInvert number of rows to invert
+ */
 void invertTetrisRows(Tetris *tetris, int nrowsToInvert)
 {
     int i = 0;
@@ -485,6 +571,13 @@ void invertTetrisRows(Tetris *tetris, int nrowsToInvert)
     }
 }
 
+/**
+ * @brief check if the game has a winner or not
+ *
+ * @param tetris tetris array
+ * @param numberOfPlayers number of players
+ * @return return -1 if the two players have the same score otherwhise return the index of the winner based on the position of his tetris game session
+ */
 int getWinner(Tetris **tetris, int numberOfPlayers)
 {
     int winner = -1, max = 0, posMax = 0, i = 0; /* default none cuz 2 players could have the same score */

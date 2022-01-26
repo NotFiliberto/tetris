@@ -1,12 +1,18 @@
 
-/** @struct Game
- *  @brief A structure to rappresent the game and all stuffs related to it
+/**
+ * @file game.h
+ * @brief library for the game object
  *
- *  @var Game::key it contains the keyboard's input
- *  @var Game::win store the current window used by the terminal
- *  @var Game::tetris store all the tetris sessions
- *  @var Game::gamemode gamemode selected
- *  @var Game::playerTurn code of the current player
+ */
+
+/** @struct Game
+ *  @brief Structure to rappresent the game and all stuffs related to it, used to wrap all the things
+ *
+ *  @param key it contains the keyboard's input
+ *  @param win store the current window used by the terminal
+ *  @param tetris store all the tetris sessions
+ *  @param gamemode gamemode selected
+ *  @param playerTurn code of the current player
  *
  */
 typedef struct game

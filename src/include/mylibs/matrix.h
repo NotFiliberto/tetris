@@ -1,12 +1,18 @@
+/**
+ * @file matrix.h
+ * @brief Useful library for matrix
+ *
+ */
+
 #include "stdio.h"
 #include "stdlib.h"
 
 /** @struct Matrix
  * @brief Matrix rappresentation
  *
- * @var Matrix::cols columns of the matrix
- * @var Matrix::rows rows of the matrix
- * @var Matrix::map array that rappresents evey value of the matrix
+ * @param cols columns of the matrix
+ * @param rows rows of the matrix
+ * @param map array that rappresents evey value of the matrix
  */
 typedef struct Matrix
 {
@@ -32,9 +38,7 @@ Matrix *createMatrix(int cols, int rows)
 }
 
 /**
- * @brief delete matrix
- *
- * free memory space used by the matrix gived in input
+ * @brief delete matrix, free memory space used by the matrix gived in input
  *
  * @param matrix matrix to delete
  */
@@ -65,9 +69,7 @@ void printMatrix(Matrix *matrix)
 }
 
 /**
- * @brief clear every index of the matrix
- *
- * repleace every index of the matrix with a 0
+ * @brief clear every index of the matrix, repleace every index of the matrix with a 0
  *
  * @param matrix the matrix to be cleared
  */
