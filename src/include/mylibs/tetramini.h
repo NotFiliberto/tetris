@@ -49,7 +49,7 @@
  * @param code the uniqe code for the type of the tetramino
  * @param matrix matrix rappresenation of the tetramino
  * @param width width of the tetramino
- * @param heigth heigh of tetramino
+ * @param heigth height of tetramino
  * @param offsetX number of empty rows before the start of the tetramino in the matrix
  * @param offsetY number of empty cols before the start of the tetramino in the matrix
  */

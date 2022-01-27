@@ -56,4 +56,5 @@ build
 main
 main.exe
 docs
+CMakeLists.txt
 .DS_store
